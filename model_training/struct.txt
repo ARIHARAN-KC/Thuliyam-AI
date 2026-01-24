@@ -1,0 +1,27 @@
+dataset/
+├── train/
+│   ├── real/
+│   │   └── 10500 images (FFHQ)
+│   └── fake/
+│       ├── faceswap/        (2800)
+│       ├── sfhq/            (3500)
+│       ├── thisperson/      (3500)
+│       └── stable_diffusion/(700)
+│
+├── validation/
+│   ├── real/
+│   │   └── 2250
+│   └── fake/
+│       ├── faceswap/        (600)
+│       ├── sfhq/            (750)
+│       ├── thisperson/      (750)
+│       └── stable_diffusion/(150)
+│
+└── test/
+    ├── real/
+    │   └── 2250
+    └── fake/
+        ├── faceswap/        (600)
+        ├── sfhq/            (750)
+        ├── thisperson/      (750)
+        └── stable_diffusion/(150)

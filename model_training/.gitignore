@@ -1,0 +1,9 @@
+.venv
+archive
+dataset
+final_dataset
+final_dataset1
+model
+stable-diffusion-face-dataset
+trained_model
+model_training\final_dataset\test\fake\faceswap

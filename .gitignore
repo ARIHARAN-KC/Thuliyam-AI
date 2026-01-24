@@ -1,0 +1,8 @@
+# large dataset
+datasets
+dataset
+testing_imgs
+client\.next
+client\node_modules
+client\.env.local
+model_training\.venv

@@ -1,0 +1,10 @@
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Env
+env/
+
+# Large / model files
+model_weights/
