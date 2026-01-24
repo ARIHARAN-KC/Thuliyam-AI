@@ -4,7 +4,6 @@ __pycache__/
 *.pyo
 
 # Env
-env/
-
+.venv
 # Large / model files
 model_weights/
