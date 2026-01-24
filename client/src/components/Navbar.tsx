@@ -1,23 +1,50 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X, Shield } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Menu, X, ChevronDown, ImageIcon, VideoIcon, MusicIcon, TextIcon } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
 
 export default function Navbar() {
-    const [isScrolled, setIsScrolled] = useState(false);
-    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAnalyzeOpen, setIsAnalyzeOpen] = useState(false);
+  const analyzeDropdownRef = useRef<HTMLDivElement>(null);
+  const mobileAnalyzeRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
-        };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
-    }, []);
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
-    return (
-        <>
-            <style jsx>{`
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (analyzeDropdownRef.current && !analyzeDropdownRef.current.contains(event.target as Node)) {
+        setIsAnalyzeOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // Close mobile dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (mobileAnalyzeRef.current && !mobileAnalyzeRef.current.contains(event.target as Node)) {
+        setIsAnalyzeOpen(false);
+      }
+    };
+    if (isMobileMenuOpen) {
+      document.addEventListener('mousedown', handleClickOutside);
+    }
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [isMobileMenuOpen]);
+
+  return (
+    <>
+      <style jsx>{`
         @keyframes slideDown {
           from {
             opacity: 0;
@@ -26,6 +53,17 @@ export default function Navbar() {
           to {
             opacity: 1;
             transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          from {
+            opacity: 0;
+            transform: scale(0.95);
+          }
+          to {
+            opacity: 1;
+            transform: scale(1);
           }
         }
 
@@ -39,15 +77,15 @@ export default function Navbar() {
           padding: 1.5rem 2rem;
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          background: ${isScrolled ? 'rgba(16, 18, 40, 0.9)' : 'rgba(16, 18, 40, 0.5)'};
-          border-bottom: 1px solid ${isScrolled ? 'rgba(0, 245, 160, 0.2)' : 'rgba(255, 255, 255, 0.1)'};
+          background: ${isScrolled ? 'rgba(16, 18, 40, 0.95)' : 'rgba(16, 18, 40, 0.7)'};
+          border-bottom: 1px solid ${isScrolled ? 'rgba(0, 245, 160, 0.3)' : 'rgba(255, 255, 255, 0.1)'};
           animation: slideDown 0.6s ease-out;
         }
 
         .navbar.scrolled {
-          background: rgba(16, 18, 40, 0.95);
-          border-bottom: 1px solid rgba(0, 245, 160, 0.3);
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+          background: rgba(16, 18, 40, 0.98);
+          border-bottom: 1px solid rgba(0, 245, 160, 0.4);
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
           padding: 1rem 2rem;
         }
 
@@ -119,47 +157,17 @@ export default function Navbar() {
           width: 100%;
         }
 
-        .btn-outline {
-          padding: 0.8rem 2rem;
-          background: transparent;
-          color: #ffffff;
-          font-weight: 600;
-          font-size: 0.95rem;
-          border: 2px solid #00F5A0;
-          border-radius: 12px;
-          cursor: pointer;
-          transition: all 0.3s ease;
+        /* Desktop Analyze Dropdown Styles */
+        .analyze-dropdown {
+          position: relative;
+          height: 44px;
+        }
+
+        .analyze-trigger {
           display: flex;
           align-items: center;
-          gap: 0.8rem;
-          text-decoration: none;
-          position: relative;
-          overflow: hidden;
-        }
-
-        .btn-outline::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, #00F5A0, #7877C6);
-          opacity: 0;
-          transition: opacity 0.3s ease;
-          z-index: -1;
-        }
-
-        .btn-outline:hover::before {
-          opacity: 0.1;
-        }
-
-        .btn-outline:hover {
-          color: #ffffff;
-          border-color: #7877C6;
-          transform: translateY(-2px);
-          box-shadow: 0 10px 20px rgba(0, 245, 160, 0.2);
-        }
-
-        .btn-primary {
-          padding: 0.8rem 2rem;
+          gap: 0.5rem;
+          padding: 0.75rem 1.5rem;
           background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
           color: #ffffff;
           font-weight: 600;
@@ -168,15 +176,13 @@ export default function Navbar() {
           border-radius: 12px;
           cursor: pointer;
           transition: all 0.3s ease;
-          display: flex;
-          align-items: center;
-          gap: 0.8rem;
           text-decoration: none;
           position: relative;
           overflow: hidden;
+          height: 44px;
         }
 
-        .btn-primary::before {
+        .analyze-trigger::after {
           content: '';
           position: absolute;
           inset: 0;
@@ -184,20 +190,127 @@ export default function Navbar() {
           opacity: 0;
           transition: opacity 0.3s ease;
           z-index: -1;
+          border-radius: 12px;
         }
 
-        .btn-primary:hover::before {
+        .analyze-trigger:hover::after {
           opacity: 1;
         }
 
-        .btn-primary span {
-          position: relative;
-          z-index: 2;
-        }
-
-        .btn-primary:hover {
+        .analyze-trigger:hover {
           transform: translateY(-2px);
           box-shadow: 0 15px 30px rgba(0, 245, 160, 0.3);
+        }
+
+        .dropdown-menu {
+          position: absolute;
+          top: calc(100% + 12px);
+          left: 50%;
+          transform: translateX(-50%) scale(0.95);
+          background: rgba(22, 24, 50, 0.98);
+          backdrop-filter: blur(30px);
+          -webkit-backdrop-filter: blur(30px);
+          border: 1px solid rgba(0, 245, 160, 0.4);
+          border-radius: 16px;
+          padding: 1rem;
+          min-width: 280px;
+          opacity: 0;
+          visibility: hidden;
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          z-index: 1000;
+          box-shadow: 
+            0 25px 50px rgba(0, 0, 0, 0.5),
+            0 0 0 1px rgba(0, 245, 160, 0.1) inset;
+          animation: fadeIn 0.3s ease-out;
+        }
+
+        .dropdown-menu.active {
+          opacity: 1;
+          visibility: visible;
+          transform: translateX(-50%) scale(1);
+        }
+
+        .dropdown-menu::before {
+          content: '';
+          position: absolute;
+          top: -8px;
+          left: 50%;
+          transform: translateX(-50%);
+          width: 0;
+          height: 0;
+          border-left: 8px solid transparent;
+          border-right: 8px solid transparent;
+          border-bottom: 8px solid rgba(22, 24, 50, 0.98);
+          filter: drop-shadow(0 -1px 0 rgba(0, 245, 160, 0.4));
+        }
+
+        .dropdown-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 1rem 1.25rem;
+          color: #ffffff;
+          text-decoration: none;
+          transition: all 0.3s ease;
+          position: relative;
+          border-radius: 12px;
+          margin: 0.25rem 0;
+        }
+
+        .dropdown-item:hover {
+          background: linear-gradient(90deg, 
+            rgba(0, 245, 160, 0.15) 0%,
+            rgba(120, 119, 198, 0.15) 100%
+          );
+          transform: translateX(4px);
+        }
+
+        .dropdown-item-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          background: rgba(0, 245, 160, 0.1);
+          border-radius: 10px;
+          border: 1px solid rgba(0, 245, 160, 0.2);
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover .dropdown-item-icon {
+          background: rgba(0, 245, 160, 0.2);
+          border-color: rgba(0, 245, 160, 0.4);
+          transform: scale(1.1);
+        }
+
+        .dropdown-item-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
+        .dropdown-item-title {
+          font-weight: 600;
+          font-size: 1rem;
+          color: #ffffff;
+          margin-bottom: 0.25rem;
+          transition: all 0.3s ease;
+        }
+
+        .dropdown-item:hover .dropdown-item-title {
+          color: #00F5A0;
+        }
+
+        .dropdown-item-subtitle {
+          font-size: 0.85rem;
+          color: rgba(255, 255, 255, 0.6);
+          transition: all 0.3s ease;
+          font-weight: 400;
+        }
+
+        .dropdown-item:hover .dropdown-item-subtitle {
+          color: rgba(255, 255, 255, 0.9);
         }
 
         .mobile-menu-button {
@@ -216,9 +329,9 @@ export default function Navbar() {
           left: 0;
           right: 0;
           bottom: 0;
-          background: rgba(10, 11, 30, 0.95);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+          background: rgba(10, 11, 30, 0.98);
+          backdrop-filter: blur(15px);
+          -webkit-backdrop-filter: blur(15px);
           z-index: 1001;
           display: flex;
           flex-direction: column;
@@ -238,48 +351,150 @@ export default function Navbar() {
           display: flex;
           flex-direction: column;
           align-items: center;
-          gap: 2rem;
+          gap: 1rem;
           width: 90%;
           max-width: 400px;
+          padding: 2rem 0;
         }
 
         .mobile-menu-content a {
           color: #ffffff;
           text-decoration: none;
-          font-size: 1.5rem;
-          font-weight: 600;
-          padding: 1rem 2rem;
+          font-size: 1.3rem;
+          font-weight: 500;
+          padding: 1rem 1.5rem;
           width: 100%;
-          text-align: center;
-          border-radius: 16px;
+          text-align: left;
+          border-radius: 12px;
           transition: all 0.3s ease;
           background: rgba(255, 255, 255, 0.05);
           border: 1px solid rgba(255, 255, 255, 0.1);
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
         }
 
         .mobile-menu-content a:hover {
           color: #ffffff;
           background: rgba(0, 245, 160, 0.1);
           border-color: rgba(0, 245, 160, 0.3);
-          transform: translateY(-2px);
+          transform: translateX(4px);
         }
 
-        .mobile-menu-content .btn-outline {
-          font-size: 1.3rem;
-          padding: 1.2rem 2rem;
-          justify-content: center;
+        /* Mobile Analyze Dropdown */
+        .mobile-analyze-dropdown {
+          width: 100%;
+          position: relative;
         }
 
-        .mobile-menu-content .btn-primary {
+        .mobile-analyze-trigger {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
           font-size: 1.3rem;
-          padding: 1.2rem 2rem;
+          font-weight: 500;
+          padding: 1rem 1.5rem;
+          background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
+          color: #ffffff;
+          border: none;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          margin-bottom: 0.5rem;
+        }
+
+        .mobile-analyze-trigger:hover {
+          transform: translateX(4px);
+          box-shadow: 0 15px 30px rgba(0, 245, 160, 0.3);
+        }
+
+        .mobile-dropdown-menu {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          gap: 0.5rem;
+          padding: 0.75rem;
+          background: rgba(22, 24, 50, 0.8);
+          border-radius: 12px;
+          border: 1px solid rgba(0, 245, 160, 0.3);
+          animation: slideDown 0.3s ease-out;
+        }
+
+        .mobile-dropdown-item {
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          padding: 0.875rem 1rem;
+          color: #ffffff;
+          text-decoration: none;
+          font-size: 1.1rem;
+          font-weight: 500;
+          border-radius: 10px;
+          transition: all 0.3s ease;
+          position: relative;
+        }
+
+        .mobile-dropdown-item:hover {
+          background: linear-gradient(90deg, 
+            rgba(0, 245, 160, 0.15) 0%,
+            rgba(120, 119, 198, 0.15) 100%
+          );
+          transform: translateX(4px);
+        }
+
+        .mobile-dropdown-item-icon {
+          display: flex;
+          align-items: center;
           justify-content: center;
+          width: 32px;
+          height: 32px;
+          background: rgba(0, 245, 160, 0.1);
+          border-radius: 8px;
+          border: 1px solid rgba(0, 245, 160, 0.2);
+          flex-shrink: 0;
+          transition: all 0.3s ease;
+        }
+
+        .mobile-dropdown-item:hover .mobile-dropdown-item-icon {
+          background: rgba(0, 245, 160, 0.2);
+          border-color: rgba(0, 245, 160, 0.4);
+        }
+
+        .mobile-dropdown-item-content {
+          display: flex;
+          flex-direction: column;
+          flex: 1;
+        }
+
+        .mobile-dropdown-item-title {
+          color: #ffffff;
+          font-size: 1rem;
+          font-weight: 500;
+          transition: all 0.3s ease;
+          line-height: 1.3;
+        }
+
+        .mobile-dropdown-item:hover .mobile-dropdown-item-title {
+          color: #00F5A0;
+        }
+
+        .mobile-dropdown-item-subtitle {
+          font-size: 0.8rem;
+          color: rgba(255, 255, 255, 0.6);
+          font-weight: 400;
+          transition: all 0.3s ease;
+          line-height: 1.4;
+        }
+
+        .mobile-dropdown-item:hover .mobile-dropdown-item-subtitle {
+          color: rgba(255, 255, 255, 0.9);
         }
 
         .close-menu-button {
           position: absolute;
-          top: 2rem;
-          right: 2rem;
+          top: 1.5rem;
+          right: 1.5rem;
           background: transparent;
           border: none;
           color: #ffffff;
@@ -288,47 +503,13 @@ export default function Navbar() {
           z-index: 1002;
         }
 
-        .user-menu {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-
-        .user-avatar {
-          width: 40px;
-          height: 40px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, #00F5A0, #7877C6);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: #ffffff;
-          font-weight: 600;
-          border: 2px solid rgba(255, 255, 255, 0.1);
-          cursor: pointer;
-          transition: all 0.3s ease;
-        }
-
-        .user-avatar:hover {
-          transform: scale(1.05);
-          border-color: rgba(0, 245, 160, 0.5);
-        }
-
-        .badge {
-          background: linear-gradient(135deg, #FF4757, #FF6B9D);
-          color: #ffffff;
-          font-size: 0.7rem;
-          font-weight: 700;
-          padding: 0.2rem 0.6rem;
-          border-radius: 10px;
-          position: absolute;
-          top: -5px;
-          right: -5px;
-        }
-
         @media (max-width: 1024px) {
           .navbar-links {
             gap: 2rem;
+          }
+          
+          .dropdown-menu {
+            min-width: 260px;
           }
         }
 
@@ -353,6 +534,28 @@ export default function Navbar() {
             width: 40px;
             height: 40px;
           }
+          
+          .mobile-menu-content {
+            padding: 1rem 0;
+          }
+          
+          .mobile-menu-content a {
+            font-size: 1.2rem;
+            padding: 0.875rem 1.25rem;
+          }
+          
+          .mobile-analyze-trigger {
+            font-size: 1.2rem;
+            padding: 0.875rem 1.25rem;
+          }
+          
+          .mobile-dropdown-item {
+            padding: 0.75rem 0.875rem;
+          }
+          
+          .mobile-dropdown-item-title {
+            font-size: 1rem;
+          }
         }
 
         @media (max-width: 480px) {
@@ -368,78 +571,250 @@ export default function Navbar() {
           .navbar-logo {
             gap: 1rem;
           }
+          
+          .mobile-menu-content {
+            gap: 0.75rem;
+          }
+          
+          .mobile-menu-content a {
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem;
+          }
+          
+          .mobile-analyze-trigger {
+            font-size: 1.1rem;
+            padding: 0.75rem 1rem;
+          }
+          
+          .mobile-dropdown-item {
+            padding: 0.625rem 0.75rem;
+          }
+          
+          .mobile-dropdown-item-title {
+            font-size: 0.95rem;
+          }
+          
+          .mobile-dropdown-item-subtitle {
+            font-size: 0.75rem;
+          }
+          
+          .mobile-dropdown-item-icon {
+            width: 28px;
+            height: 28px;
+          }
         }
 
         @media (max-width: 360px) {
           .navbar-logo {
             gap: 0.8rem;
           }
+          
+          .mobile-menu-content {
+            max-width: 320px;
+          }
+          
+          .mobile-dropdown-menu {
+            padding: 0.5rem;
+          }
         }
       `}</style>
 
-            <header className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-                <div className="navbar-container">
-                    {/* Logo */}
-                    <Link href="/" className="navbar-logo">
-                        <div className="logo-wrapper">
-                            <Image
-                                src="/logo.svg"
-                                alt="Thuliyam AI Logo"
-                                width={50}
-                                height={50}
-                                className="logo-image"
-                                priority
-                            />
-                        </div>
-                    </Link>
+      <header className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
+        <div className="navbar-container">
+          {/* Logo */}
+          <Link href="/" className="navbar-logo">
+            <div className="logo-wrapper">
+              <Image
+                src="/logo.svg"
+                alt="Thuliyam AI Logo"
+                width={50}
+                height={50}
+                className="logo-image"
+                priority
+              />
+            </div>
+          </Link>
 
-                    {/* Desktop Navigation */}
-                    <nav className="navbar-links">
-                        <Link href="/">Home</Link>
-                        <Link href="/about">About</Link>
-                        <div className="user-menu">
-                            <Link href="/upload" className="btn-outline">
-                                <span>Analyze</span>
-                            </Link>
-                        </div>
-                    </nav>
+          {/* Desktop Navigation */}
+          <nav className="navbar-links">
+            <Link href="/">Home</Link>
+            <Link href="/about">About</Link>
 
-                    {/* Mobile Menu Button */}
-                    <button
-                        className="mobile-menu-button"
-                        onClick={() => setIsMobileMenuOpen(true)}
+            {/* Analyze Dropdown for Desktop */}
+            <div className="analyze-dropdown" ref={analyzeDropdownRef}>
+              <button
+                className="analyze-trigger"
+                onClick={() => setIsAnalyzeOpen(!isAnalyzeOpen)}
+              >
+                <span>Analyze</span>
+                <ChevronDown size={18} />
+              </button>
+
+              <div className={`dropdown-menu ${isAnalyzeOpen ? 'active' : ''}`}>
+                <Link
+                  href="/analyze/audio"
+                  className="dropdown-item"
+                  onClick={() => setIsAnalyzeOpen(false)}
+                >
+                  <div className="dropdown-item-icon">
+                    <MusicIcon size={20} />
+                  </div>
+                  <div className="dropdown-item-content">
+                    <div className="dropdown-item-title">Audio Analyze</div>
+                    <div className="dropdown-item-subtitle">Analyze audio files</div>
+                  </div>
+                </Link>
+                <Link
+                  href="/analyze/image"
+                  className="dropdown-item"
+                  onClick={() => setIsAnalyzeOpen(false)}
+                >
+                  <div className="dropdown-item-icon">
+                    <ImageIcon size={20} />
+                  </div>
+                  <div className="dropdown-item-content">
+                    <div className="dropdown-item-title">Image Analyze</div>
+                    <div className="dropdown-item-subtitle">Analyze and process images</div>
+                  </div>
+                </Link>
+                <Link
+                  href="/analyze/video"
+                  className="dropdown-item"
+                  onClick={() => setIsAnalyzeOpen(false)}
+                >
+                  <div className="dropdown-item-icon">
+                    <VideoIcon size={20} />
+                  </div>
+                  <div className="dropdown-item-content">
+                    <div className="dropdown-item-title">Video Analyze</div>
+                    <div className="dropdown-item-subtitle">Process video content</div>
+                  </div>
+                </Link>
+                <Link
+                  href="/analyze/text"
+                  className="dropdown-item"
+                  onClick={() => setIsAnalyzeOpen(false)}
+                >
+                  <div className="dropdown-item-icon">
+                    <TextIcon size={20} />
+                  </div>
+                  <div className="dropdown-item-content">
+                    <div className="dropdown-item-title">Text Analyze</div>
+                    <div className="dropdown-item-subtitle">Process text content</div>
+                  </div>
+                </Link>
+              </div>
+            </div>
+          </nav>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="mobile-menu-button"
+            onClick={() => setIsMobileMenuOpen(true)}
+          >
+            <Menu size={28} />
+          </button>
+
+          {/* Mobile Menu Overlay */}
+          <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
+            <button
+              className="close-menu-button"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              <X size={32} />
+            </button>
+
+            <div className="mobile-menu-content">
+              <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
+                <span>Home</span>
+              </Link>
+              <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
+                <span>About</span>
+              </Link>
+
+              {/* Analyze Dropdown for Mobile */}
+              <div className="mobile-analyze-dropdown" ref={mobileAnalyzeRef}>
+                <button
+                  className="mobile-analyze-trigger"
+                  onClick={() => setIsAnalyzeOpen(!isAnalyzeOpen)}
+                >
+                  <span>Analyze</span>
+                  <ChevronDown size={20} />
+                </button>
+
+                {isAnalyzeOpen && (
+                  <div className="mobile-dropdown-menu">
+                    <Link
+                      href="/analyze/audio"
+                      className="mobile-dropdown-item"
+                      onClick={() => {
+                        setIsAnalyzeOpen(false);
+                        setIsMobileMenuOpen(false);
+                      }}
                     >
-                        <Menu size={28} />
-                    </button>
-
-                    {/* Mobile Menu Overlay */}
-                    <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
-                        <button
-                            className="close-menu-button"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            <X size={32} />
-                        </button>
-
-                        <div className="mobile-menu-content">
-                            <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                                <Shield size={20} />
-                                <span>Home</span>
-                            </Link>
-                            <Link href="/about" onClick={() => setIsMobileMenuOpen(false)}>
-                                <span>About</span>
-                            </Link>
-                            <Link
-                                href="/upload"
-                                className="btn-primary"
-                                onClick={() => setIsMobileMenuOpen(false)}
-                            >
-                                <span>Analyze Image</span>
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </header>
-        </>
-    );
+                      <div className="mobile-dropdown-item-icon">
+                        <MusicIcon size={18} />
+                      </div>
+                      <div className="mobile-dropdown-item-content">
+                        <div className="mobile-dropdown-item-title">Audio Analyze</div>
+                        <div className="mobile-dropdown-item-subtitle">Analyze audio files</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/analyze/image"
+                      className="mobile-dropdown-item"
+                      onClick={() => {
+                        setIsAnalyzeOpen(false);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <div className="mobile-dropdown-item-icon">
+                        <ImageIcon size={18} />
+                      </div>
+                      <div className="mobile-dropdown-item-content">
+                        <div className="mobile-dropdown-item-title">Image Analyze</div>
+                        <div className="mobile-dropdown-item-subtitle">Analyze and process images</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/analyze/video"
+                      className="mobile-dropdown-item"
+                      onClick={() => {
+                        setIsAnalyzeOpen(false);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <div className="mobile-dropdown-item-icon">
+                        <VideoIcon size={18} />
+                      </div>
+                      <div className="mobile-dropdown-item-content">
+                        <div className="mobile-dropdown-item-title">Video Analyze</div>
+                        <div className="mobile-dropdown-item-subtitle">Process video content</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/analyze/text"
+                      className="mobile-dropdown-item"
+                      onClick={() => {
+                        setIsAnalyzeOpen(false);
+                        setIsMobileMenuOpen(false);
+                      }}
+                    >
+                      <div className="mobile-dropdown-item-icon">
+                        <TextIcon size={18} />
+                      </div>
+                      <div className="mobile-dropdown-item-content">
+                        <div className="mobile-dropdown-item-title">Text Analyze</div>
+                        <div className="mobile-dropdown-item-subtitle">Process text content</div>
+                      </div>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+    </>
+  );
 }

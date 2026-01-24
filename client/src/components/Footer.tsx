@@ -405,9 +405,9 @@ export default function Footer() {
                   <Globe className="link-icon" size={16} />
                   <span>About Us</span>
                 </a>
-                <a href="/upload">
+                <a href="/analyze/image">
                   <Globe className="link-icon" size={16} />
-                  <span>Analyze Image</span>
+                  <span>Image</span>
                 </a>
                 <a href="/api-docs">
                   <Globe className="link-icon" size={16} />
