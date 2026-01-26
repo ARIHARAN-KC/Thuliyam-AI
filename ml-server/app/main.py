@@ -4,7 +4,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 from app.api.image import router as image_router
-from app.models.image_model import load_image_model
 
 load_dotenv()
 
@@ -15,8 +14,6 @@ app = FastAPI(
     version="1.0.0"
 )
 
-origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -24,10 +21,10 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load model once at startup
-@app.on_event("startup")
-def startup_event():
-    load_image_model()
+# REMOVE startup model loading (IMPORTANT)
+# @app.on_event("startup")
+# def startup_event():
+#     load_image_model()
 
 app.include_router(image_router)
 
