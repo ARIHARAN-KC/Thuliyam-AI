@@ -1,19 +1,25 @@
+import os
+import torch
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-import torch
-
+from dotenv import load_dotenv
 from app.api.image import router as image_router
 from app.models.image_model import load_image_model
+
+load_dotenv()
+
+origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
 
 app = FastAPI(
     title="Thuliyam AI – Deepfake Detection API",
     version="1.0.0"
 )
 
-# CORS (restrict origins in production)
+origins = os.getenv("ALLOWED_ORIGINS", "").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_methods=["*"],
     allow_headers=["*"],
 )
