@@ -1,9 +1,13 @@
 import ImageUpload from "@/components/ImageUpload";
+import Navbar from "@/components/Navbar";
 
 export default function UploadPage() {
   return (
-    <main className="min-h-screen bg-gray-50 py-12">
-      <ImageUpload />
-    </main>
+    <>
+      <Navbar />
+      <main className="min-h-screen pt-[96px] bg-gray-50">
+        <ImageUpload />
+      </main>
+    </>
   );
 }
