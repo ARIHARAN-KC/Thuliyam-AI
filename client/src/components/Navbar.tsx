@@ -7,8 +7,10 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAnalyzeOpen, setIsAnalyzeOpen] = useState(false);
+  const [isMobileAnalyzeOpen, setIsMobileAnalyzeOpen] = useState(false);
+
   const analyzeDropdownRef = useRef<HTMLDivElement>(null);
-  const mobileAnalyzeRef = useRef<HTMLDivElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,17 +31,43 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Close mobile dropdown when clicking outside
+  // Close mobile menu when clicking outside or pressing escape
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (mobileAnalyzeRef.current && !mobileAnalyzeRef.current.contains(event.target as Node)) {
-        setIsAnalyzeOpen(false);
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target as Node)) {
+        setIsMobileMenuOpen(false);
+        setIsMobileAnalyzeOpen(false);
       }
     };
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsMobileMenuOpen(false);
+        setIsMobileAnalyzeOpen(false);
+      }
+    };
+
     if (isMobileMenuOpen) {
       document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener('keydown', handleEscape);
+      // Prevent body scroll when mobile menu is open
+      document.body.style.overflow = 'hidden';
     }
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleEscape);
+      document.body.style.overflow = 'unset';
+    };
+  }, [isMobileMenuOpen]);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
   }, [isMobileMenuOpen]);
 
   return (
@@ -67,6 +95,17 @@ export default function Navbar() {
           }
         }
 
+        @keyframes slideInFromLeft {
+          from {
+            opacity: 0;
+            transform: translateX(-20px);
+          }
+          to {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
         .navbar {
           position: fixed;
           top: 0;
@@ -74,10 +113,10 @@ export default function Navbar() {
           right: 0;
           z-index: 1000;
           transition: all 0.4s ease;
-          padding: 1.5rem 2rem;
+          padding: 1rem 1.5rem;
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          background: ${isScrolled ? 'rgba(16, 18, 40, 0.95)' : 'rgba(16, 18, 40, 0.7)'};
+          background: ${isScrolled ? 'rgba(16, 18, 40, 0.98)' : 'rgba(16, 18, 40, 0.9)'};
           border-bottom: 1px solid ${isScrolled ? 'rgba(0, 245, 160, 0.3)' : 'rgba(255, 255, 255, 0.1)'};
           animation: slideDown 0.6s ease-out;
         }
@@ -86,7 +125,7 @@ export default function Navbar() {
           background: rgba(16, 18, 40, 0.98);
           border-bottom: 1px solid rgba(0, 245, 160, 0.4);
           box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-          padding: 1rem 2rem;
+          padding: 0.75rem 1.5rem;
         }
 
         .navbar-container {
@@ -101,16 +140,16 @@ export default function Navbar() {
         .navbar-logo {
           display: flex;
           align-items: center;
-          gap: 1.5rem;
+          gap: 1rem;
           text-decoration: none;
           position: relative;
-          z-index: 2;
+          z-index: 1002;
         }
 
         .logo-wrapper {
           position: relative;
-          width: 50px;
-          height: 50px;
+          width: 40px;
+          height: 40px;
           display: flex;
           align-items: center;
           justify-content: center;
@@ -125,7 +164,7 @@ export default function Navbar() {
         .navbar-links {
           display: flex;
           align-items: center;
-          gap: 3rem;
+          gap: 2.5rem;
         }
 
         .navbar-links a {
@@ -136,6 +175,7 @@ export default function Navbar() {
           transition: all 0.3s ease;
           position: relative;
           padding: 0.5rem 0;
+          white-space: nowrap;
         }
 
         .navbar-links a::after {
@@ -167,7 +207,7 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           gap: 0.5rem;
-          padding: 0.75rem 1.5rem;
+          padding: 0.75rem 1.25rem;
           background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
           color: #ffffff;
           font-weight: 600;
@@ -180,6 +220,7 @@ export default function Navbar() {
           position: relative;
           overflow: hidden;
           height: 44px;
+          white-space: nowrap;
         }
 
         .analyze-trigger::after {
@@ -221,13 +262,13 @@ export default function Navbar() {
           box-shadow: 
             0 25px 50px rgba(0, 0, 0, 0.5),
             0 0 0 1px rgba(0, 245, 160, 0.1) inset;
-          animation: fadeIn 0.3s ease-out;
         }
 
         .dropdown-menu.active {
           opacity: 1;
           visibility: visible;
           transform: translateX(-50%) scale(1);
+          animation: fadeIn 0.3s ease-out;
         }
 
         .dropdown-menu::before {
@@ -288,6 +329,7 @@ export default function Navbar() {
           display: flex;
           flex-direction: column;
           flex: 1;
+          min-width: 0;
         }
 
         .dropdown-item-title {
@@ -296,6 +338,9 @@ export default function Navbar() {
           color: #ffffff;
           margin-bottom: 0.25rem;
           transition: all 0.3s ease;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .dropdown-item:hover .dropdown-item-title {
@@ -307,6 +352,9 @@ export default function Navbar() {
           color: rgba(255, 255, 255, 0.6);
           transition: all 0.3s ease;
           font-weight: 400;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
         .dropdown-item:hover .dropdown-item-subtitle {
@@ -321,6 +369,17 @@ export default function Navbar() {
           cursor: pointer;
           padding: 0.5rem;
           z-index: 1002;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          transition: background-color 0.3s ease;
+        }
+
+        .mobile-menu-button:hover {
+          background: rgba(255, 255, 255, 0.1);
         }
 
         .mobile-menu-overlay {
@@ -335,8 +394,6 @@ export default function Navbar() {
           z-index: 1001;
           display: flex;
           flex-direction: column;
-          align-items: center;
-          justify-content: center;
           opacity: 0;
           visibility: hidden;
           transition: all 0.3s ease;
@@ -350,20 +407,21 @@ export default function Navbar() {
         .mobile-menu-content {
           display: flex;
           flex-direction: column;
-          align-items: center;
-          gap: 1rem;
-          width: 90%;
-          max-width: 400px;
-          padding: 2rem 0;
+          align-items: stretch;
+          gap: 0.75rem;
+          width: 100%;
+          max-width: 100%;
+          padding: 5rem 1.5rem 2rem;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
 
-        .mobile-menu-content a {
+        .mobile-menu-content > a {
           color: #ffffff;
           text-decoration: none;
-          font-size: 1.3rem;
+          font-size: 1.25rem;
           font-weight: 500;
-          padding: 1rem 1.5rem;
-          width: 100%;
+          padding: 1.125rem 1.25rem;
           text-align: left;
           border-radius: 12px;
           transition: all 0.3s ease;
@@ -372,9 +430,15 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           justify-content: space-between;
+          animation: slideInFromLeft 0.3s ease-out forwards;
+          opacity: 0;
         }
 
-        .mobile-menu-content a:hover {
+        .mobile-menu-content > a:nth-child(1) { animation-delay: 0.1s; }
+        .mobile-menu-content > a:nth-child(2) { animation-delay: 0.15s; }
+        .mobile-menu-content > .mobile-analyze-dropdown { animation-delay: 0.2s; }
+
+        .mobile-menu-content > a:hover {
           color: #ffffff;
           background: rgba(0, 245, 160, 0.1);
           border-color: rgba(0, 245, 160, 0.3);
@@ -385,6 +449,8 @@ export default function Navbar() {
         .mobile-analyze-dropdown {
           width: 100%;
           position: relative;
+          animation: slideInFromLeft 0.3s ease-out forwards;
+          opacity: 0;
         }
 
         .mobile-analyze-trigger {
@@ -392,19 +458,20 @@ export default function Navbar() {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          font-size: 1.3rem;
+          font-size: 1.25rem;
           font-weight: 500;
-          padding: 1rem 1.5rem;
+          padding: 1.125rem 1.25rem;
           background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
           color: #ffffff;
           border: none;
           border-radius: 12px;
           cursor: pointer;
           transition: all 0.3s ease;
-          margin-bottom: 0.5rem;
+          margin-bottom: 0;
         }
 
-        .mobile-analyze-trigger:hover {
+        .mobile-analyze-trigger:hover,
+        .mobile-analyze-trigger:active {
           transform: translateX(4px);
           box-shadow: 0 15px 30px rgba(0, 245, 160, 0.3);
         }
@@ -415,10 +482,11 @@ export default function Navbar() {
           flex-direction: column;
           gap: 0.5rem;
           padding: 0.75rem;
-          background: rgba(22, 24, 50, 0.8);
+          background: rgba(22, 24, 50, 0.9);
           border-radius: 12px;
           border: 1px solid rgba(0, 245, 160, 0.3);
-          animation: slideDown 0.3s ease-out;
+          margin-top: 0.5rem;
+          animation: slideInFromLeft 0.2s ease-out;
         }
 
         .mobile-dropdown-item {
@@ -428,14 +496,15 @@ export default function Navbar() {
           padding: 0.875rem 1rem;
           color: #ffffff;
           text-decoration: none;
-          font-size: 1.1rem;
+          font-size: 1.05rem;
           font-weight: 500;
           border-radius: 10px;
           transition: all 0.3s ease;
           position: relative;
         }
 
-        .mobile-dropdown-item:hover {
+        .mobile-dropdown-item:hover,
+        .mobile-dropdown-item:active {
           background: linear-gradient(90deg, 
             rgba(0, 245, 160, 0.15) 0%,
             rgba(120, 119, 198, 0.15) 100%
@@ -456,7 +525,8 @@ export default function Navbar() {
           transition: all 0.3s ease;
         }
 
-        .mobile-dropdown-item:hover .mobile-dropdown-item-icon {
+        .mobile-dropdown-item:hover .mobile-dropdown-item-icon,
+        .mobile-dropdown-item:active .mobile-dropdown-item-icon {
           background: rgba(0, 245, 160, 0.2);
           border-color: rgba(0, 245, 160, 0.4);
         }
@@ -465,17 +535,22 @@ export default function Navbar() {
           display: flex;
           flex-direction: column;
           flex: 1;
+          min-width: 0;
         }
 
         .mobile-dropdown-item-title {
           color: #ffffff;
-          font-size: 1rem;
+          font-size: 0.95rem;
           font-weight: 500;
           transition: all 0.3s ease;
           line-height: 1.3;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
-        .mobile-dropdown-item:hover .mobile-dropdown-item-title {
+        .mobile-dropdown-item:hover .mobile-dropdown-item-title,
+        .mobile-dropdown-item:active .mobile-dropdown-item-title {
           color: #00F5A0;
         }
 
@@ -485,24 +560,51 @@ export default function Navbar() {
           font-weight: 400;
           transition: all 0.3s ease;
           line-height: 1.4;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
 
-        .mobile-dropdown-item:hover .mobile-dropdown-item-subtitle {
+        .mobile-dropdown-item:hover .mobile-dropdown-item-subtitle,
+        .mobile-dropdown-item:active .mobile-dropdown-item-subtitle {
           color: rgba(255, 255, 255, 0.9);
         }
 
         .close-menu-button {
           position: absolute;
-          top: 1.5rem;
-          right: 1.5rem;
+          top: 1.25rem;
+          right: 1.25rem;
           background: transparent;
           border: none;
           color: #ffffff;
           cursor: pointer;
           padding: 0.5rem;
           z-index: 1002;
+          width: 44px;
+          height: 44px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          transition: background-color 0.3s ease;
         }
 
+        .close-menu-button:hover {
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Desktop Styles */
+        @media (min-width: 1025px) {
+          .navbar-links {
+            display: flex;
+          }
+          
+          .mobile-menu-button {
+            display: none;
+          }
+        }
+
+        /* Tablet Styles */
         @media (max-width: 1024px) {
           .navbar-links {
             gap: 2rem;
@@ -513,13 +615,14 @@ export default function Navbar() {
           }
         }
 
+        /* Mobile Styles */
         @media (max-width: 768px) {
           .navbar {
-            padding: 1rem 1.5rem;
+            padding: 0.875rem 1.25rem;
           }
 
           .navbar.scrolled {
-            padding: 0.8rem 1.5rem;
+            padding: 0.75rem 1.25rem;
           }
 
           .navbar-links {
@@ -527,67 +630,31 @@ export default function Navbar() {
           }
 
           .mobile-menu-button {
-            display: block;
+            display: flex;
           }
 
           .logo-wrapper {
-            width: 40px;
-            height: 40px;
+            width: 36px;
+            height: 36px;
           }
           
           .mobile-menu-content {
-            padding: 1rem 0;
+            padding: 4.5rem 1.25rem 1.5rem;
+            gap: 0.75rem;
           }
           
-          .mobile-menu-content a {
-            font-size: 1.2rem;
-            padding: 0.875rem 1.25rem;
+          .mobile-menu-content > a {
+            font-size: 1.1rem;
+            padding: 1rem 1.125rem;
           }
           
           .mobile-analyze-trigger {
-            font-size: 1.2rem;
-            padding: 0.875rem 1.25rem;
+            font-size: 1.1rem;
+            padding: 1rem 1.125rem;
           }
           
           .mobile-dropdown-item {
             padding: 0.75rem 0.875rem;
-          }
-          
-          .mobile-dropdown-item-title {
-            font-size: 1rem;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .navbar {
-            padding: 0.8rem 1rem;
-          }
-
-          .logo-wrapper {
-            width: 35px;
-            height: 35px;
-          }
-          
-          .navbar-logo {
-            gap: 1rem;
-          }
-          
-          .mobile-menu-content {
-            gap: 0.75rem;
-          }
-          
-          .mobile-menu-content a {
-            font-size: 1.1rem;
-            padding: 0.75rem 1rem;
-          }
-          
-          .mobile-analyze-trigger {
-            font-size: 1.1rem;
-            padding: 0.75rem 1rem;
-          }
-          
-          .mobile-dropdown-item {
-            padding: 0.625rem 0.75rem;
           }
           
           .mobile-dropdown-item-title {
@@ -599,36 +666,168 @@ export default function Navbar() {
           }
           
           .mobile-dropdown-item-icon {
-            width: 28px;
-            height: 28px;
+            width: 30px;
+            height: 30px;
+          }
+          
+          .close-menu-button {
+            top: 1rem;
+            right: 1rem;
           }
         }
 
-        @media (max-width: 360px) {
+        /* Small Mobile Styles */
+        @media (max-width: 480px) {
+          .navbar {
+            padding: 0.75rem 1rem;
+          }
+
+          .navbar.scrolled {
+            padding: 0.625rem 1rem;
+          }
+
+          .logo-wrapper {
+            width: 32px;
+            height: 32px;
+          }
+          
           .navbar-logo {
-            gap: 0.8rem;
+            gap: 0.75rem;
           }
           
           .mobile-menu-content {
-            max-width: 320px;
+            padding: 4rem 1rem 1.25rem;
+            gap: 0.625rem;
+          }
+          
+          .mobile-menu-content > a {
+            font-size: 1rem;
+            padding: 0.875rem 1rem;
+          }
+          
+          .mobile-analyze-trigger {
+            font-size: 1rem;
+            padding: 0.875rem 1rem;
           }
           
           .mobile-dropdown-menu {
-            padding: 0.5rem;
+            padding: 0.625rem;
+            gap: 0.375rem;
+          }
+          
+          .mobile-dropdown-item {
+            padding: 0.625rem 0.75rem;
+            gap: 0.75rem;
+          }
+          
+          .mobile-dropdown-item-title {
+            font-size: 0.9rem;
+          }
+          
+          .mobile-dropdown-item-subtitle {
+            font-size: 0.7rem;
+          }
+          
+          .mobile-dropdown-item-icon {
+            width: 28px;
+            height: 28px;
+          }
+          
+          .mobile-menu-button {
+            width: 40px;
+            height: 40px;
+          }
+          
+          .close-menu-button {
+            width: 40px;
+            height: 40px;
+            top: 0.875rem;
+            right: 0.875rem;
+          }
+        }
+
+        /* Extra Small Mobile Styles */
+        @media (max-width: 360px) {
+          .navbar {
+            padding: 0.625rem 0.875rem;
+          }
+
+          .navbar.scrolled {
+            padding: 0.5rem 0.875rem;
+          }
+
+          .logo-wrapper {
+            width: 28px;
+            height: 28px;
+          }
+          
+          .mobile-menu-content {
+            padding: 3.5rem 0.875rem 1rem;
+          }
+          
+          .mobile-menu-content > a {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+          }
+          
+          .mobile-analyze-trigger {
+            font-size: 0.95rem;
+            padding: 0.75rem 0.875rem;
+          }
+          
+          .mobile-dropdown-item {
+            padding: 0.5rem 0.625rem;
+          }
+          
+          .mobile-dropdown-item-title {
+            font-size: 0.85rem;
+          }
+          
+          .mobile-dropdown-item-subtitle {
+            font-size: 0.65rem;
+          }
+          
+          .mobile-dropdown-item-icon {
+            width: 26px;
+            height: 26px;
+          }
+        }
+
+        /* Landscape Orientation */
+        @media (max-height: 600px) and (orientation: landscape) {
+          .mobile-menu-content {
+            padding-top: 3.5rem;
+            padding-bottom: 1rem;
+            max-height: calc(100vh - 4.5rem);
+          }
+          
+          .mobile-menu-content > a {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+          }
+          
+          .mobile-analyze-trigger {
+            padding: 0.75rem 1rem;
+            font-size: 1rem;
+          }
+          
+          .mobile-dropdown-menu {
+            max-height: 200px;
+            overflow-y: auto;
           }
         }
       `}</style>
 
       <header className={`navbar ${isScrolled ? 'scrolled' : ''}`}>
-        <div className="navbar-container">
+        <div className="navbar-container" ref={mobileMenuRef}>
           {/* Logo */}
           <Link href="/" className="navbar-logo">
             <div className="logo-wrapper">
               <Image
                 src="/logo.svg"
                 alt="Thuliyam AI Logo"
-                width={50}
-                height={50}
+                width={40}
+                height={40}
                 className="logo-image"
                 priority
               />
@@ -645,29 +844,19 @@ export default function Navbar() {
               <button
                 className="analyze-trigger"
                 onClick={() => setIsAnalyzeOpen(!isAnalyzeOpen)}
+                aria-expanded={isAnalyzeOpen}
+                aria-haspopup="true"
               >
                 <span>Analyze</span>
                 <ChevronDown size={18} />
               </button>
 
-              <div className={`dropdown-menu ${isAnalyzeOpen ? 'active' : ''}`}>
-                <Link
-                  href="/analyze/audio"
-                  className="dropdown-item"
-                  onClick={() => setIsAnalyzeOpen(false)}
-                >
-                  <div className="dropdown-item-icon">
-                    <MusicIcon size={20} />
-                  </div>
-                  <div className="dropdown-item-content">
-                    <div className="dropdown-item-title">Audio Analyze</div>
-                    <div className="dropdown-item-subtitle">Analyze audio files</div>
-                  </div>
-                </Link>
+              <div className={`dropdown-menu ${isAnalyzeOpen ? 'active' : ''}`} role="menu" aria-hidden={!isAnalyzeOpen}>
                 <Link
                   href="/analyze/image"
                   className="dropdown-item"
                   onClick={() => setIsAnalyzeOpen(false)}
+                  role="menuitem"
                 >
                   <div className="dropdown-item-icon">
                     <ImageIcon size={20} />
@@ -678,9 +867,24 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href="/analyze/video"
+                  href="/features/about-features"
                   className="dropdown-item"
                   onClick={() => setIsAnalyzeOpen(false)}
+                  role="menuitem"
+                >
+                  <div className="dropdown-item-icon">
+                    <MusicIcon size={20} />
+                  </div>
+                  <div className="dropdown-item-content">
+                    <div className="dropdown-item-title">Audio Analyze</div>
+                    <div className="dropdown-item-subtitle">Analyze audio files</div>
+                  </div>
+                </Link>
+                <Link
+                  href="/features/about-features"
+                  className="dropdown-item"
+                  onClick={() => setIsAnalyzeOpen(false)}
+                  role="menuitem"
                 >
                   <div className="dropdown-item-icon">
                     <VideoIcon size={20} />
@@ -691,9 +895,10 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href="/analyze/text"
+                  href="/features/about-features"
                   className="dropdown-item"
                   onClick={() => setIsAnalyzeOpen(false)}
+                  role="menuitem"
                 >
                   <div className="dropdown-item-icon">
                     <TextIcon size={20} />
@@ -708,20 +913,28 @@ export default function Navbar() {
           </nav>
 
           {/* Mobile Menu Button */}
-          <button
-            className="mobile-menu-button"
-            onClick={() => setIsMobileMenuOpen(true)}
-          >
-            <Menu size={28} />
-          </button>
+          {!isMobileMenuOpen && (
+            <button
+              className="mobile-menu-button"
+              onClick={() => setIsMobileMenuOpen(true)}
+              aria-label="Open menu"
+            >
+              <Menu size={24} />
+            </button>
+          )}
+
 
           {/* Mobile Menu Overlay */}
           <div className={`mobile-menu-overlay ${isMobileMenuOpen ? 'active' : ''}`}>
             <button
               className="close-menu-button"
-              onClick={() => setIsMobileMenuOpen(false)}
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsMobileAnalyzeOpen(false);
+              }}
+              aria-label="Close menu"
             >
-              <X size={32} />
+              <X size={24} />
             </button>
 
             <div className="mobile-menu-content">
@@ -733,43 +946,30 @@ export default function Navbar() {
               </Link>
 
               {/* Analyze Dropdown for Mobile */}
-              <div className="mobile-analyze-dropdown" ref={mobileAnalyzeRef}>
+              <div className="mobile-analyze-dropdown">
                 <button
                   className="mobile-analyze-trigger"
-                  onClick={() => setIsAnalyzeOpen(!isAnalyzeOpen)}
+                  onClick={() => setIsMobileAnalyzeOpen(!isMobileAnalyzeOpen)}
+                  aria-expanded={isMobileAnalyzeOpen}
+                  aria-haspopup="true"
                 >
                   <span>Analyze</span>
-                  <ChevronDown size={20} />
+                  <ChevronDown size={18} style={{
+                    transform: isMobileAnalyzeOpen ? 'rotate(180deg)' : 'none',
+                    transition: 'transform 0.3s ease'
+                  }} />
                 </button>
 
-                {isAnalyzeOpen && (
-                  <div className="mobile-dropdown-menu">
-                    <Link
-                      href="/analyze/audio"
-                      className="mobile-dropdown-item"
-                      onClick={() => {
-                        setIsAnalyzeOpen(false);
-                        setIsMobileMenuOpen(false);
-                      }}
-                    >
-                      <div className="mobile-dropdown-item-icon">
-                        <MusicIcon size={18} />
-                      </div>
-                      <div className="mobile-dropdown-item-content">
-                        <div className="mobile-dropdown-item-title">Audio Analyze</div>
-                        <div className="mobile-dropdown-item-subtitle">Analyze audio files</div>
-                      </div>
-                    </Link>
+                {isMobileAnalyzeOpen && (
+                  <div className="mobile-dropdown-menu" role="menu">
                     <Link
                       href="/analyze/image"
                       className="mobile-dropdown-item"
-                      onClick={() => {
-                        setIsAnalyzeOpen(false);
-                        setIsMobileMenuOpen(false);
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      role="menuitem"
                     >
                       <div className="mobile-dropdown-item-icon">
-                        <ImageIcon size={18} />
+                        <ImageIcon size={16} />
                       </div>
                       <div className="mobile-dropdown-item-content">
                         <div className="mobile-dropdown-item-title">Image Analyze</div>
@@ -777,15 +977,27 @@ export default function Navbar() {
                       </div>
                     </Link>
                     <Link
-                      href="/analyze/video"
+                      href="/features/about-features"
                       className="mobile-dropdown-item"
-                      onClick={() => {
-                        setIsAnalyzeOpen(false);
-                        setIsMobileMenuOpen(false);
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      role="menuitem"
                     >
                       <div className="mobile-dropdown-item-icon">
-                        <VideoIcon size={18} />
+                        <MusicIcon size={16} />
+                      </div>
+                      <div className="mobile-dropdown-item-content">
+                        <div className="mobile-dropdown-item-title">Audio Analyze</div>
+                        <div className="mobile-dropdown-item-subtitle">Analyze audio files</div>
+                      </div>
+                    </Link>
+                    <Link
+                      href="/features/about-features"
+                      className="mobile-dropdown-item"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      role="menuitem"
+                    >
+                      <div className="mobile-dropdown-item-icon">
+                        <VideoIcon size={16} />
                       </div>
                       <div className="mobile-dropdown-item-content">
                         <div className="mobile-dropdown-item-title">Video Analyze</div>
@@ -793,15 +1005,13 @@ export default function Navbar() {
                       </div>
                     </Link>
                     <Link
-                      href="/analyze/text"
+                      href="/features/about-features"
                       className="mobile-dropdown-item"
-                      onClick={() => {
-                        setIsAnalyzeOpen(false);
-                        setIsMobileMenuOpen(false);
-                      }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      role="menuitem"
                     >
                       <div className="mobile-dropdown-item-icon">
-                        <TextIcon size={18} />
+                        <TextIcon size={16} />
                       </div>
                       <div className="mobile-dropdown-item-content">
                         <div className="mobile-dropdown-item-title">Text Analyze</div>

@@ -229,7 +229,7 @@ export default function ImageUpload() {
     <>
       <style jsx>{`
         .container {
-          min-height: 100vh;
+          min-height: calc(120vh - 96px);
           display: flex;
           align-items: center;
           justify-content: center;

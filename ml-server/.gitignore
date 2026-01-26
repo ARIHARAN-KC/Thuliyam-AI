@@ -5,5 +5,5 @@ __pycache__/
 
 # Env
 .venv
-# Large / model files
-model_weights/
+# Large & unused model files
+unused-model
