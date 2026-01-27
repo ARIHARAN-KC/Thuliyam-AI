@@ -1,6 +1,6 @@
 "use client";
 
-import { Construction, Clock, Sparkles, AudioWaveform, Video, FileText, ImageIcon, Zap, Target, Rocket } from "lucide-react";
+import { AudioWaveform, Video, FileText } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function ComingSoon() {
