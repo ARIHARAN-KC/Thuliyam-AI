@@ -1,88 +1,122 @@
 "use client";
 
-import { AudioWaveform, Video, FileText } from "lucide-react";
+import { useState, useEffect } from "react";
+import { AudioWaveform, Video, FileText, Zap, Clock, Target, Users, Rocket, Sparkles, BarChart3 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
 export default function ComingSoon() {
+  const [countdown, setCountdown] = useState({
+    days: "00",
+    hours: "00",
+    minutes: "00",
+    seconds: "00"
+  });
+
+  useEffect(() => {
+    // Set launch date to 30 days from now
+    const launchDate = new Date();
+    launchDate.setDate(launchDate.getDate() + 30);
+
+    const timer = setInterval(() => {
+      const now = new Date().getTime();
+      const distance = launchDate.getTime() - now;
+
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      setCountdown({
+        days: days.toString().padStart(2, '0'),
+        hours: hours.toString().padStart(2, '0'),
+        minutes: minutes.toString().padStart(2, '0'),
+        seconds: seconds.toString().padStart(2, '0')
+      });
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  const features = [
+    {
+      icon: <AudioWaveform size={28} />,
+      title: "Advanced Audio Analysis",
+      description: "Real-time speech recognition with sentiment analysis and speaker identification",
+      color: "from-green-500 to-blue-500"
+    },
+    {
+      icon: <Video size={28} />,
+      title: "Intelligent Video Processing",
+      description: "Object detection, scene analysis, and deepfake detection capabilities",
+      color: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: <FileText size={28} />,
+      title: "Smart Text Analysis",
+      description: "Natural language processing with summarization and entity recognition",
+      color: "from-orange-500 to-red-500"
+    },
+    {
+      icon: <BarChart3 size={28} />,
+      title: "Comprehensive Analytics",
+      description: "Detailed insights and reporting with customizable dashboards",
+      color: "from-blue-500 to-cyan-500"
+    }
+  ];
+
+  const progress = [
+    { label: "Development", value: 85, color: "#00F5A0" },
+    { label: "Testing", value: 70, color: "#7877C6" },
+    { label: "Integration", value: 90, color: "#FF77C6" },
+    { label: "Documentation", value: 60, color: "#00D4FF" }
+  ];
+
   return (
     <>
-      <Navbar />
-      
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&family=Space+Mono:wght@400;700&family=Crimson+Pro:wght@300;600&display=swap');
-        
+    <Navbar/>
+      <style jsx>{`
         @keyframes float {
           0%, 100% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
+          50% { transform: translateY(-5px); }
+        }
+
+        @keyframes pulse-glow {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.7; }
         }
 
         @keyframes shimmer {
           0% { background-position: -1000px 0; }
           100% { background-position: 1000px 0; }
         }
-        
-        @keyframes ticker {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        
-        @keyframes fadeSlideUp {
+
+        @keyframes fadeIn {
           from {
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(20px);
           }
           to {
             opacity: 1;
             transform: translateY(0);
           }
         }
-        
-        @keyframes scaleReveal {
-          from {
-            opacity: 0;
-            transform: scale(0.95);
-          }
-          to {
-            opacity: 1;
-            transform: scale(1);
-          }
-        }
-        
-        @keyframes borderDraw {
-          from {
-            clip-path: inset(0 100% 0 0);
-          }
-          to {
-            clip-path: inset(0 0 0 0);
-          }
-        }
-        
-        @keyframes pulseGlow {
-          0%, 100% {
-            opacity: 0.3;
-          }
-          50% {
-            opacity: 0.6;
-          }
-        }
 
-        .coming-soon-page {
-          min-height: 100vh;
+        .coming-soon-hero {
           background: 
-            radial-gradient(ellipse at 50% 10%, rgba(16, 18, 40, 0.8) 0%, transparent 50%),
-            radial-gradient(ellipse at 80% 80%, rgba(255, 119, 198, 0.05) 0%, transparent 50%),
-            linear-gradient(180deg, #0A0B1E 0%, #1A1B3E 50%, #0A0B1E 100%);
+            radial-gradient(ellipse at 20% 20%, rgba(120, 119, 198, 0.15) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 80%, rgba(255, 119, 198, 0.1) 0%, transparent 50%),
+            linear-gradient(135deg, #0A0B1E 0%, #1A1B3E 50%, #0A0B1E 100%);
           position: relative;
           overflow: hidden;
           font-family: 'Inter', sans-serif;
-          padding-top: 6rem;
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 4rem 2rem;
         }
 
-        .coming-soon-page::before {
+        .coming-soon-hero::before {
           content: '';
           position: absolute;
           inset: 0;
@@ -92,421 +126,539 @@ export default function ComingSoon() {
           animation: shimmer 20s linear infinite;
           pointer-events: none;
         }
-        
-        .editorial-hero {
-          font-family: 'Playfair Display', serif;
-          font-weight: 900;
-          letter-spacing: -0.04em;
-          line-height: 0.9;
-        }
-        
-        .mono-text {
-          font-family: 'Space Mono', monospace;
-          letter-spacing: 0.05em;
-        }
-        
-        .serif-body {
-          font-family: 'Crimson Pro', serif;
-          font-weight: 300;
-          letter-spacing: 0.01em;
-          line-height: 1.7;
-        }
-        
-        .ticker-wrap {
-          overflow: hidden;
-          white-space: nowrap;
-          border-top: 1px solid rgba(0, 245, 160, 0.3);
-          border-bottom: 1px solid rgba(0, 245, 160, 0.3);
-          background: rgba(16, 18, 40, 0.7);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-        }
-        
-        .ticker {
-          display: inline-block;
-          animation: ticker 30s linear infinite;
-        }
-        
-        .brutalist-border {
-          background: rgba(16, 18, 40, 0.7);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          border-radius: 16px;
-          border: 1px solid rgba(255, 255, 255, 0.15);
-          box-shadow: 
-            0 10px 40px rgba(0, 0, 0, 0.2),
-            0 0 0 1px rgba(255, 255, 255, 0.1);
-          transition: all 0.4s ease;
+
+        .coming-soon-content {
+          max-width: 1200px;
+          width: 100%;
+          text-align: center;
           position: relative;
-          overflow: hidden;
+          z-index: 2;
+          padding: 3rem;
         }
 
-        .brutalist-border::before {
-          content: '';
-          position: absolute;
-          inset: 0;
-          background: linear-gradient(135deg, 
-            rgba(0, 245, 160, 0.05) 0%, 
-            transparent 50%, 
-            rgba(255, 119, 198, 0.05) 100%);
-          opacity: 0;
-          transition: opacity 0.4s ease;
-        }
-
-        .brutalist-border:hover::before {
-          opacity: 1;
-        }
-
-        .brutalist-border:hover {
-          transform: translateY(-5px);
-          border-color: rgba(0, 245, 160, 0.3);
-          box-shadow: 
-            0 20px 60px rgba(0, 245, 160, 0.2),
-            0 0 0 1px rgba(0, 245, 160, 0.2);
-        }
-        
-        .feature-grid {
-          display: grid;
-          grid-template-columns: 1fr;
-          gap: 2px;
-          background: linear-gradient(135deg, 
-            rgba(0, 245, 160, 0.1) 0%, 
-            rgba(120, 119, 198, 0.1) 100%);
-          border-radius: 24px;
-          overflow: hidden;
-          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-        }
-        
-        @media (min-width: 768px) {
-          .feature-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-        
-        @media (min-width: 1024px) {
-          .feature-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-        
-        .feature-cell {
-          background: rgba(16, 18, 40, 0.7);
-          backdrop-filter: blur(20px);
-          -webkit-backdrop-filter: blur(20px);
-          padding: 3rem 2rem;
-          position: relative;
-          transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-          border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .feature-cell:hover {
-          background: rgba(26, 27, 62, 0.7);
-          transform: translateY(-5px);
-          border-color: rgba(0, 245, 160, 0.3);
-        }
-        
-        .feature-cell::after {
-          content: '';
-          position: absolute;
-          bottom: 0;
-          left: 0;
-          right: 0;
-          height: 2px;
-          background: linear-gradient(90deg, #00F5A0, #7877C6);
-          opacity: 0;
-          transition: opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .feature-cell:hover::after {
-          opacity: 1;
-        }
-        
-        .stagger-1 { animation-delay: 0.1s; }
-        .stagger-2 { animation-delay: 0.2s; }
-        .stagger-3 { animation-delay: 0.3s; }
-        .stagger-4 { animation-delay: 0.4s; }
-        .stagger-5 { animation-delay: 0.5s; }
-        .stagger-6 { animation-delay: 0.6s; }
-        
-        .fade-up {
-          animation: fadeSlideUp 0.8s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .scale-reveal {
-          animation: scaleReveal 0.6s ease-out forwards;
-          opacity: 0;
-        }
-        
-        .status-bar {
-          height: 4px;
-          background: linear-gradient(90deg, 
-            #00F5A0 0%, 
-            #7877C6 33%, 
-            #FF77C6 66%, 
-            #00F5A0 100%);
-          background-size: 200% 100%;
-          animation: shimmer 3s linear infinite;
-        }
-        
-        .editorial-number {
-          font-family: 'Playfair Display', serif;
-          font-weight: 900;
-          font-size: 8rem;
-          line-height: 1;
-          background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-          text-shadow: 0 10px 30px rgba(0, 245, 160, 0.2);
-        }
-        
-        @media (max-width: 768px) {
-          .editorial-number {
-            font-size: 4rem;
-          }
-          
-          .coming-soon-page {
-            padding-top: 4rem;
-          }
-        }
-
-        .glow-text {
-          text-shadow: 0 0 20px rgba(0, 245, 160, 0.5);
-        }
-
-        .gradient-text {
-          background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .section-glow {
+        .coming-soon-glow {
           position: absolute;
           width: 200%;
           height: 200%;
-          background: radial-gradient(circle, rgba(0, 245, 160, 0.15) 0%, transparent 70%);
-          filter: blur(60px);
-          opacity: 0.3;
+          background: radial-gradient(circle, rgba(0, 245, 160, 0.2) 0%, transparent 70%);
+          filter: blur(80px);
+          opacity: 0.4;
           z-index: -1;
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
         }
+
+        .title-icon-container {
+          width: 80px;
+          height: 80px;
+          background: linear-gradient(135deg, #00F5A0, #7877C6);
+          border-radius: 20px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin: 0 auto 2rem;
+          color: white;
+          animation: float 3s ease-in-out infinite;
+        }
+
+        .coming-soon-title {
+          font-size: 4rem;
+          font-weight: 800;
+          background: linear-gradient(135deg, #00F5A0 0%, #7877C6 50%, #FF77C6 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          letter-spacing: -0.5px;
+          margin: 0 0 1rem 0;
+          text-shadow: 0 10px 30px rgba(0, 245, 160, 0.2);
+          line-height: 1.1;
+        }
+
+        .coming-soon-subtitle {
+          font-size: 1.3rem;
+          color: rgba(255, 255, 255, 0.7);
+          max-width: 600px;
+          margin: 0 auto 3rem;
+          line-height: 1.6;
+          font-weight: 400;
+        }
+
+        .countdown-container {
+          display: flex;
+          justify-content: center;
+          gap: 2rem;
+          margin: 4rem 0;
+          flex-wrap: wrap;
+        }
+
+        .countdown-item {
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 20px;
+          padding: 2rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          min-width: 150px;
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .countdown-item:hover {
+          background: rgba(255, 255, 255, 0.05);
+          transform: translateY(-5px);
+          border-color: rgba(0, 245, 160, 0.3);
+          box-shadow: 0 20px 40px rgba(0, 245, 160, 0.1);
+        }
+
+        .countdown-value {
+          font-size: 3rem;
+          font-weight: 800;
+          background: linear-gradient(135deg, #00F5A0, #7877C6);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          margin-bottom: 0.5rem;
+        }
+
+        .countdown-label {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.6);
+          text-transform: uppercase;
+          letter-spacing: 1px;
+        }
+
+        .features-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+          gap: 2rem;
+          margin: 4rem 0;
+        }
+
+        .feature-card {
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 20px;
+          padding: 2rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          transition: all 0.3s ease;
+          backdrop-filter: blur(10px);
+        }
+
+        .feature-card:hover {
+          background: rgba(255, 255, 255, 0.05);
+          border-color: rgba(0, 245, 160, 0.3);
+          transform: translateY(-5px);
+          box-shadow: 0 20px 40px rgba(0, 245, 160, 0.1);
+        }
+
+        .feature-icon {
+          width: 60px;
+          height: 60px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: linear-gradient(135deg, #00F5A0, #7877C6);
+          border-radius: 16px;
+          margin: 0 auto 1.5rem;
+          color: white;
+          font-size: 1.8rem;
+        }
+
+        .feature-title {
+          font-size: 1.2rem;
+          font-weight: 700;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 0.8rem;
+        }
+
+        .feature-desc {
+          font-size: 0.95rem;
+          color: rgba(255, 255, 255, 0.6);
+          line-height: 1.5;
+        }
+
+        .progress-container {
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 20px;
+          padding: 2.5rem;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          margin: 4rem 0;
+        }
+
+        .section-title {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 2rem;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 0.75rem;
+        }
+
+        .section-icon {
+          color: #00F5A0;
+        }
+
+        .progress-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 2rem;
+        }
+
+        .progress-item {
+          text-align: center;
+        }
+
+        .progress-info {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 0.5rem;
+        }
+
+        .progress-label {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.7);
+          font-weight: 600;
+        }
+
+        .progress-percent {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.9);
+          font-weight: 700;
+        }
+
+        .progress-bar {
+          height: 8px;
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 4px;
+          overflow: hidden;
+        }
+
+        .progress-fill {
+          height: 100%;
+          border-radius: 4px;
+          transition: width 1s ease-in-out;
+          background: linear-gradient(90deg, #00F5A0, #7877C6);
+        }
+
+        .notify-section {
+          text-align: center;
+          padding: 3rem;
+          background: rgba(255, 255, 255, 0.03);
+          border-radius: 20px;
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          margin-top: 4rem;
+        }
+
+        .notify-title {
+          font-size: 1.5rem;
+          font-weight: 700;
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: 1rem;
+        }
+
+        .notify-description {
+          font-size: 1rem;
+          color: rgba(255, 255, 255, 0.7);
+          margin-bottom: 2rem;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+          line-height: 1.6;
+        }
+
+        .notify-form {
+          max-width: 500px;
+          margin: 0 auto;
+        }
+
+        .form-group {
+          display: flex;
+          gap: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .form-input {
+          flex: 1;
+          padding: 1rem 1.5rem;
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 12px;
+          color: rgba(255, 255, 255, 0.9);
+          font-size: 1rem;
+          font-family: 'Inter', sans-serif;
+          transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+          outline: none;
+          border-color: #00F5A0;
+          box-shadow: 0 0 0 2px rgba(0, 245, 160, 0.2);
+        }
+
+        .form-input::placeholder {
+          color: rgba(255, 255, 255, 0.4);
+        }
+
+        .submit-btn {
+          padding: 1rem 2rem;
+          background: linear-gradient(135deg, #00F5A0 0%, #7877C6 100%);
+          color: white;
+          font-weight: 600;
+          font-size: 1rem;
+          border: none;
+          border-radius: 12px;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 0.5rem;
+        }
+
+        .submit-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 10px 30px rgba(0, 245, 160, 0.3);
+        }
+
+        .privacy-note {
+          margin-top: 2rem;
+          padding: 1.5rem;
+          background: rgba(255, 255, 255, 0.03);
+          border: 1px solid rgba(255, 255, 255, 0.1);
+          border-radius: 16px;
+          color: rgba(255, 255, 255, 0.6);
+          font-size: 0.9rem;
+          line-height: 1.6;
+          backdrop-filter: blur(10px);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 1rem;
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .privacy-icon {
+          color: #7877C6;
+          flex-shrink: 0;
+        }
+
+        @media (max-width: 1024px) {
+          .coming-soon-title {
+            font-size: 3.2rem;
+          }
+          
+          .coming-soon-content {
+            padding: 2rem;
+          }
+          
+          .features-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+          }
+          
+          .countdown-container {
+            gap: 1rem;
+          }
+          
+          .countdown-item {
+            min-width: 130px;
+            padding: 1.5rem;
+          }
+          
+          .countdown-value {
+            font-size: 2.5rem;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .coming-soon-hero {
+            padding: 2rem 1rem;
+          }
+          
+          .coming-soon-title {
+            font-size: 2.5rem;
+          }
+          
+          .coming-soon-subtitle {
+            font-size: 1.1rem;
+            padding: 0;
+          }
+          
+          .features-grid {
+            grid-template-columns: 1fr;
+            gap: 1rem;
+          }
+          
+          .countdown-container {
+            gap: 0.75rem;
+          }
+          
+          .countdown-item {
+            min-width: 100px;
+            padding: 1rem;
+          }
+          
+          .countdown-value {
+            font-size: 2rem;
+          }
+          
+          .form-group {
+            flex-direction: column;
+          }
+          
+          .progress-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .coming-soon-title {
+            font-size: 2rem;
+          }
+          
+          .countdown-item {
+            min-width: 80px;
+            padding: 0.75rem;
+          }
+          
+          .countdown-value {
+            font-size: 1.8rem;
+          }
+          
+          .feature-card {
+            padding: 1.5rem;
+          }
+        }
       `}</style>
-      
-      <main className="coming-soon-page">
-        <div className="section-glow"></div>
-        
-        {/* Status Bar */}
-        <div className="status-bar"></div>
-        
-        {/* Running Ticker */}
-        <div className="ticker-wrap py-4">
-          <div className="ticker">
-            <span className="mono-text gradient-text text-sm font-bold px-8">
-              LAUNCHING SOON • AI-POWERED ANALYSIS • NEXT GENERATION TECHNOLOGY • 
-              LAUNCHING SOON • AI-POWERED ANALYSIS • NEXT GENERATION TECHNOLOGY • 
-              LAUNCHING SOON • AI-POWERED ANALYSIS • NEXT GENERATION TECHNOLOGY • 
-            </span>
-          </div>
-        </div>
 
-        <div className="max-w-7xl mx-auto px-6 py-16 md:py-24 relative z-10">
-          {/* Hero Section - Editorial Magazine Style */}
-          <div className="mb-24 fade-up">
-            <div className="grid md:grid-cols-12 gap-8 items-end mb-16">
-              <div className="md:col-span-8">
-                <div className="mono-text text-[#7877C6] text-xs font-bold mb-4 tracking-widest">
-                  ISSUE 001 / WINTER 2026
+      <section className="coming-soon-hero">
+        <div className="coming-soon-glow"></div>
+
+        <div className="coming-soon-content">
+          <div className="title-icon-container">
+            <Rocket size={40} />
+          </div>
+
+          <h1 className="coming-soon-title">
+            Coming Soon
+          </h1>
+
+          <p className="coming-soon-subtitle">
+            We're building something extraordinary! Get ready for the next generation of 
+            AI-powered analysis tools. Launching very soon.
+          </p>
+
+          <div className="countdown-container">
+            <div className="countdown-item">
+              <div className="countdown-value">{countdown.days}</div>
+              <div className="countdown-label">Days</div>
+            </div>
+            <div className="countdown-item">
+              <div className="countdown-value">{countdown.hours}</div>
+              <div className="countdown-label">Hours</div>
+            </div>
+            <div className="countdown-item">
+              <div className="countdown-value">{countdown.minutes}</div>
+              <div className="countdown-label">Minutes</div>
+            </div>
+            <div className="countdown-item">
+              <div className="countdown-value">{countdown.seconds}</div>
+              <div className="countdown-label">Seconds</div>
+            </div>
+          </div>
+
+          <div className="features-grid">
+            {features.map((feature, index) => (
+              <div key={index} className="feature-card">
+                <div className="feature-icon">
+                  {feature.icon}
                 </div>
-                <h1 className="editorial-hero text-white text-6xl md:text-8xl lg:text-9xl mb-6">
-                  Something
-                  <br />
-                  <span className="gradient-text glow-text">Epic</span>
-                  <br />
-                  Is Coming
-                </h1>
+                <h3 className="feature-title">{feature.title}</h3>
+                <p className="feature-desc">{feature.description}</p>
               </div>
-              <div className="md:col-span-4">
-                <div className="brutalist-border p-8">
-                  <div className="editorial-number">73</div>
-                  <div className="mono-text text-[#00F5A0] text-xs font-bold mt-2">
-                    PERCENT COMPLETE
+            ))}
+          </div>
+
+          <div className="progress-container">
+            <h2 className="section-title">
+              <Target className="section-icon" size={24} />
+              Development Progress
+            </h2>
+            <div className="progress-grid">
+              {progress.map((item, index) => (
+                <div key={index} className="progress-item">
+                  <div className="progress-info">
+                    <span className="progress-label">{item.label}</span>
+                    <span className="progress-percent">{item.value}%</span>
+                  </div>
+                  <div className="progress-bar">
+                    <div 
+                      className="progress-fill" 
+                      style={{ 
+                        width: `${item.value}%`,
+                        background: `linear-gradient(90deg, ${item.color}, ${item.color})`
+                      }}
+                    />
                   </div>
                 </div>
-              </div>
+              ))}
             </div>
+          </div>
+
+          <div className="notify-section">
+            <h2 className="notify-title">Get Notified First</h2>
+            <p className="notify-description">
+              Be among the first to know when we launch. Enter your email and we'll notify 
+              you as soon as our new AI-powered platform is ready.
+            </p>
             
-            <div className="grid md:grid-cols-2 gap-12 border-t-2 border-[rgba(0,245,160,0.3)] pt-12">
-              <div>
-                <p className="serif-body text-gray-300 text-xl md:text-2xl mb-6">
-                  We're engineering the future of AI-powered content analysis. 
-                  A revolutionary platform built on next-generation technology, 
-                  designed to transform how you interact with digital media.
-                </p>
-              </div>
-              <div className="flex flex-col justify-between">
-                <div className="mono-text text-xs text-gray-500 space-y-2">
-                  <div className="flex justify-between border-b border-gray-800 pb-2">
-                    <span>STATUS</span>
-                    <span className="text-[#00F5A0]">DEVELOPMENT</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-800 pb-2">
-                    <span>PROGRESS</span>
-                    <span className="text-[#7877C6]">85%</span>
-                  </div>
-                  <div className="flex justify-between border-b border-gray-800 pb-2">
-                    <span>ETA</span>
-                    <span className="text-[#FF77C6]">VERY SOON</span>
-                  </div>
-                </div>
+            <div className="notify-form">
+              <div className="form-group">
+                <input
+                  type="email"
+                  placeholder="Enter your email address"
+                  className="form-input"
+                />
+                <button className="submit-btn">
+                  <Sparkles size={20} />
+                  Notify Me
+                </button>
               </div>
             </div>
-          </div>
 
-          {/* Features - Brutalist Grid */}
-          <div className="mb-24">
-            <div className="mb-12 fade-up stagger-2">
-              <div className="mono-text text-[#00F5A0] text-xs font-bold mb-4 tracking-widest">
-                FEATURE SHOWCASE
+            <div className="privacy-note">
+              <div className="privacy-icon">
+                <ShieldIcon size={20} />
               </div>
-              <h2 className="editorial-hero text-white text-5xl md:text-6xl mb-4">
-                Unleash the Power
-              </h2>
-              <p className="serif-body text-gray-400 text-lg max-w-2xl">
-                Revolutionary capabilities designed to transform your workflow with artificial intelligence
-              </p>
-            </div>
-
-            <div className="feature-grid scale-reveal stagger-3">
-              {/* Audio Analysis */}
-              <div className="feature-cell group">
-                <div className="mb-6">
-                  <AudioWaveform size={48} className="text-[#00F5A0] mb-4" strokeWidth={1.5} />
-                  <div className="mono-text text-[#00F5A0] text-xs font-bold mb-3 tracking-widest">
-                    01 / AUDIO
-                  </div>
-                  <h3 className="editorial-hero text-white text-3xl mb-4">
-                    Audio Intelligence
-                  </h3>
-                  <p className="serif-body text-gray-400 text-base">
-                    Advanced speech-to-text transcription with real-time sentiment analysis 
-                    and intelligent keyword extraction powered by cutting-edge AI models.
-                  </p>
-                </div>
-              </div>
-
-              {/* Video Analysis */}
-              <div className="feature-cell group">
-                <div className="mb-6">
-                  <Video size={48} className="text-[#7877C6] mb-4" strokeWidth={1.5} />
-                  <div className="mono-text text-[#7877C6] text-xs font-bold mb-3 tracking-widest">
-                    02 / VIDEO
-                  </div>
-                  <h3 className="editorial-hero text-white text-3xl mb-4">
-                    Video Vision
-                  </h3>
-                  <p className="serif-body text-gray-400 text-base">
-                    Intelligent scene detection with advanced object recognition and 
-                    sophisticated motion tracking using computer vision AI.
-                  </p>
-                </div>
-              </div>
-
-              {/* Text Analysis */}
-              <div className="feature-cell group">
-                <div className="mb-6">
-                  <FileText size={48} className="text-[#FF77C6] mb-4" strokeWidth={1.5} />
-                  <div className="mono-text text-[#FF77C6] text-xs font-bold mb-3 tracking-widest">
-                    03 / TEXT
-                  </div>
-                  <h3 className="editorial-hero text-white text-3xl mb-4">
-                    Text Mastery
-                  </h3>
-                  <p className="serif-body text-gray-400 text-base">
-                    Powerful summarization with multi-language translation and deep 
-                    entity recognition using natural language processing.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Launch Statement */}
-          <div className="border-t-2 border-b-2 border-[rgba(0,245,160,0.3)] py-16 fade-up stagger-4">
-            <div className="grid md:grid-cols-2 gap-12 items-center">
               <div>
-                <div className="mono-text text-[#00F5A0] text-xs font-bold mb-6 tracking-widest">
-                  LAUNCH COUNTDOWN
-                </div>
-                <h3 className="editorial-hero text-white text-5xl md:text-6xl mb-6">
-                  The wait is
-                  <br />
-                  <span className="gradient-text">almost over</span>
-                </h3>
-                <p className="serif-body text-gray-300 text-xl">
-                  Be among the first to experience the future of AI-powered 
-                  content analysis. The revolution begins soon.
-                </p>
-              </div>
-              
-              <div className="space-y-6">
-                <div className="brutalist-border p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="mono-text text-xs text-gray-500">PERFORMANCE</span>
-                  </div>
-                  <div className="mono-text text-white font-bold">Lightning Fast Processing</div>
-                </div>
-                
-                <div className="brutalist-border p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="mono-text text-xs text-gray-500">TECHNOLOGY</span>
-                  </div>
-                  <div className="mono-text text-white font-bold">AI-Powered Intelligence</div>
-                </div>
-                
-                <div className="brutalist-border p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="mono-text text-xs text-gray-500">ACCURACY</span>
-                  </div>
-                  <div className="mono-text text-white font-bold">Precision Results</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Footer Info */}
-          <div className="mt-16 pt-16 border-t border-gray-800">
-            <div className="grid md:grid-cols-3 gap-8">
-              <div>
-                <div className="mono-text text-[#00F5A0] text-xs font-bold mb-3 tracking-widest">
-                  STATUS
-                </div>
-                <div className="flex items-center space-x-2">
-                  <div className="w-2 h-2 bg-[#00F5A0] rounded-full animate-pulse"></div>
-                  <span className="serif-body text-gray-400">In Development</span>
-                </div>
-              </div>
-              
-              <div>
-                <div className="mono-text text-[#7877C6] text-xs font-bold mb-3 tracking-widest">
-                  PROGRESS
-                </div>
-                <div className="serif-body text-gray-400">73% Complete</div>
-              </div>
-              
-              <div>
-                <div className="mono-text text-[#FF77C6] text-xs font-bold mb-3 tracking-widest">
-                  LAUNCH
-                </div>
-                <div className="serif-body text-gray-400">Very Soon</div>
+                Your email is safe with us. We'll only use it to send launch notifications. 
+                No spam, ever.
               </div>
             </div>
           </div>
         </div>
-      </main>
+      </section>
     </>
   );
 }
+
+// Shield icon component
+const ShieldIcon = ({ size = 24, className = "" }) => (
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    className={className}
+  >
+    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+  </svg>
+);

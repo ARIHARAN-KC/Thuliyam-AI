@@ -459,7 +459,7 @@ export default function Hero() {
               <div className="stat-label">Accuracy Rate</div>
             </div>
             <div className="stat-item">
-              <div className="stat-value">2.4M+</div>
+              <div className="stat-value">1.4M+</div>
               <div className="stat-label">Images Analyzed</div>
             </div>
             <div className="stat-item">

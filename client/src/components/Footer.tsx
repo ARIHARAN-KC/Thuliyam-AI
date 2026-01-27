@@ -468,7 +468,7 @@ export default function Footer() {
             </p>
 
             <div className="legal-links">
-              <a href="/privacy">Privacy Policy</a>
+              <a href="/privacy-policy">Privacy Policy</a>
               <a href="/terms">Terms of Service</a>
               <a href="/cookies">Cookie Policy</a>
               <a href="/security">Security</a>

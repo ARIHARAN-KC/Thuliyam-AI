@@ -406,7 +406,7 @@ export default function Features() {
                 <div className="stat-label">Accuracy</div>
               </div>
               <div className="stat">
-                <div className="stat-value">2.4M+</div>
+                <div className="stat-value">1.4M+</div>
                 <div className="stat-label">Images</div>
               </div>
             </div>
