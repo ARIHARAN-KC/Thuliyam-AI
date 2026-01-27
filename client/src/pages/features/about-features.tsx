@@ -2,7 +2,6 @@
 
 import { Construction, Clock, Sparkles, AudioWaveform, Video, FileText, ImageIcon, Zap, Target, Rocket } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import '@/pages/styles/globals.css';
 
 export default function ComingSoon() {
   return (
