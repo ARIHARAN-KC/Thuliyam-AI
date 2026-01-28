@@ -3,8 +3,6 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import SEO from "@/components/seo";
 import HowItWorks from "@/components/HowItWorks";
-import Link from "next/link";
-import { ArrowRight } from "lucide-react";
 
 export default function HowItWorksPage() {
   return (
