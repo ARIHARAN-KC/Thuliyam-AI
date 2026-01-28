@@ -1,13 +1,23 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import SEO from "@/components/seo";
 import { Shield, AlertTriangle, Brain, Target, Users, Lock, Globe, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function AboutPage() {
-    return (
-        <>
-            <style jsx>{`
+  return (
+    <>
+      <SEO
+        title="About Us - Mission & Technology"
+        description="Learn about Thuliyam AI's mission to combat AI-generated misinformation. Discover our advanced deepfake detection technology with 93.7% accuracy, responsible AI practices, and commitment to digital media authenticity."
+        url="https://thuliyam-ai.vercel.app/about"
+        keywords="about Thuliyam AI, deepfake detection technology, AI misinformation, responsible AI, machine learning accuracy, digital authenticity, computer vision"
+        pageType="website"
+      />
+
+
+      <style jsx>{`
         @keyframes fadeIn {
           from {
             opacity: 0;
@@ -484,184 +494,184 @@ export default function AboutPage() {
         }
       `}</style>
 
-            <Navbar />
+      <Navbar />
 
-            <main className="about-page">
-                <div className="hero-section">
-                    <div className="hero-glow"></div>
-                    <div className="hero-title-container">
-                        <Image
-                            src="/logo.svg"
-                            alt="Thuliyam AI Logo"
-                            width={50}
-                            height={50}
-                            className="logo-image"
-                            priority
-                        />
-                        <h1 className="hero-title">About Thuliyam AI</h1>
-                    </div>
-                    <p className="hero-subtitle">
-                        Building trust in digital media through responsible AI-powered
-                        deepfake detection using cutting-edge machine learning.
-                    </p>
-                </div>
+      <main className="about-page">
+        <div className="hero-section">
+          <div className="hero-glow"></div>
+          <div className="hero-title-container">
+            <Image
+              src="/logo.svg"
+              alt="Thuliyam AI Logo"
+              width={50}
+              height={50}
+              className="logo-image"
+              priority
+            />
+            <h1 className="hero-title">About Thuliyam AI</h1>
+          </div>
+          <p className="hero-subtitle">
+            Building trust in digital media through responsible AI-powered
+            deepfake detection using cutting-edge machine learning.
+          </p>
+        </div>
 
-                <div className="content-section">
-                    {/* Mission Section */}
-                    <div className="mission-grid">
-                        <div className="mission-card">
-                            <div className="card-icon">
-                                <Target size={28} />
-                            </div>
-                            <h2 className="card-title">Our Mission</h2>
-                            <p className="card-content">
-                                Thuliyam AI aims to combat the growing threat of AI-generated
-                                misinformation by providing fast, accessible, and intelligent
-                                deepfake detection tools. Our mission is to empower individuals,
-                                organizations, and platforms to make informed decisions about
-                                digital content authenticity.
-                            </p>
-                            <div className="stat-badge">
-                                <span className="stat-value">93.7%</span>
-                                <span className="stat-label">Detection Accuracy</span>
-                            </div>
-                        </div>
+        <div className="content-section">
+          {/* Mission Section */}
+          <div className="mission-grid">
+            <div className="mission-card">
+              <div className="card-icon">
+                <Target size={28} />
+              </div>
+              <h2 className="card-title">Our Mission</h2>
+              <p className="card-content">
+                Thuliyam AI aims to combat the growing threat of AI-generated
+                misinformation by providing fast, accessible, and intelligent
+                deepfake detection tools. Our mission is to empower individuals,
+                organizations, and platforms to make informed decisions about
+                digital content authenticity.
+              </p>
+              <div className="stat-badge">
+                <span className="stat-value">93.7%</span>
+                <span className="stat-label">Detection Accuracy</span>
+              </div>
+            </div>
 
-                        <div className="mission-card">
-                            <div className="card-icon">
-                                <Brain size={28} />
-                            </div>
-                            <h2 className="card-title">Why Thuliyam AI?</h2>
-                            <p className="card-content">
-                                With the rise of generative AI, manipulated images and videos
-                                have become increasingly realistic. Thuliyam AI was built to
-                                address this challenge using advanced machine learning models
-                                trained to analyze visual patterns, artifacts, and inconsistencies
-                                that are often invisible to the human eye.
-                            </p>
-                            <div className="stat-badge">
-                                <span className="stat-value">1.4M+</span>
-                                <span className="stat-label">Images Analyzed</span>
-                            </div>
-                        </div>
-                    </div>
+            <div className="mission-card">
+              <div className="card-icon">
+                <Brain size={28} />
+              </div>
+              <h2 className="card-title">Why Thuliyam AI?</h2>
+              <p className="card-content">
+                With the rise of generative AI, manipulated images and videos
+                have become increasingly realistic. Thuliyam AI was built to
+                address this challenge using advanced machine learning models
+                trained to analyze visual patterns, artifacts, and inconsistencies
+                that are often invisible to the human eye.
+              </p>
+              <div className="stat-badge">
+                <span className="stat-value">1.4M+</span>
+                <span className="stat-label">Images Analyzed</span>
+              </div>
+            </div>
+          </div>
 
-                    {/* How It Works */}
-                    <div className="section-header">
-                        <h2 className="section-title">How Thuliyam AI Works</h2>
-                        <p className="section-subtitle">
-                            A sophisticated three-step process powered by advanced AI technology
-                        </p>
-                    </div>
+          {/* How It Works */}
+          <div className="section-header">
+            <h2 className="section-title">How Thuliyam AI Works</h2>
+            <p className="section-subtitle">
+              A sophisticated three-step process powered by advanced AI technology
+            </p>
+          </div>
 
-                    <div className="process-grid">
-                        <div className="process-card">
-                            <div className="process-number">1</div>
-                            <h3 className="process-title">Image Analysis</h3>
-                            <p className="process-description">
-                                Uploaded images are processed and normalized to extract
-                                meaningful visual features and patterns for detailed examination.
-                            </p>
-                        </div>
+          <div className="process-grid">
+            <div className="process-card">
+              <div className="process-number">1</div>
+              <h3 className="process-title">Image Analysis</h3>
+              <p className="process-description">
+                Uploaded images are processed and normalized to extract
+                meaningful visual features and patterns for detailed examination.
+              </p>
+            </div>
 
-                        <div className="process-card">
-                            <div className="process-number">2</div>
-                            <h3 className="process-title">AI Model Evaluation</h3>
-                            <p className="process-description">
-                                Our trained deep learning models evaluate patterns commonly
-                                associated with AI-generated or manipulated images using neural networks.
-                            </p>
-                        </div>
+            <div className="process-card">
+              <div className="process-number">2</div>
+              <h3 className="process-title">AI Model Evaluation</h3>
+              <p className="process-description">
+                Our trained deep learning models evaluate patterns commonly
+                associated with AI-generated or manipulated images using neural networks.
+              </p>
+            </div>
 
-                        <div className="process-card">
-                            <div className="process-number">3</div>
-                            <h3 className="process-title">Confidence Score</h3>
-                            <p className="process-description">
-                                The system returns a classification along with a detailed
-                                confidence score to help users interpret the result accurately.
-                            </p>
-                        </div>
-                    </div>
+            <div className="process-card">
+              <div className="process-number">3</div>
+              <h3 className="process-title">Confidence Score</h3>
+              <p className="process-description">
+                The system returns a classification along with a detailed
+                confidence score to help users interpret the result accurately.
+              </p>
+            </div>
+          </div>
 
-                    {/* Accuracy & Limitations */}
-                    <div className="warning-card">
-                        <div className="warning-header">
-                            <AlertTriangle className="warning-icon" size={40} />
-                            <h2 className="warning-title">Accuracy & Limitations</h2>
-                        </div>
-                        <p className="warning-content">
-                            While Thuliyam AI leverages advanced machine learning techniques,
-                            no AI system can guarantee 100% accuracy. Here's what you need to know:
-                        </p>
-                        <ul className="warning-list">
-                            <li className="warning-item">
-                                <ArrowRight className="warning-bullet" size={20} />
-                                <span>Results are probabilistic and should be interpreted as guidance, not absolute truth.</span>
-                            </li>
-                            <li className="warning-item">
-                                <ArrowRight className="warning-bullet" size={20} />
-                                <span>New or unseen manipulation techniques may reduce detection accuracy.</span>
-                            </li>
-                            <li className="warning-item">
-                                <ArrowRight className="warning-bullet" size={20} />
-                                <span>Image quality, compression, and resolution can affect results.</span>
-                            </li>
-                            <li className="warning-item">
-                                <ArrowRight className="warning-bullet" size={20} />
-                                <span>Real-time processing may have limitations with extremely large files.</span>
-                            </li>
-                        </ul>
-                        <p className="warning-content">
-                            We strongly recommend using Thuliyam AI as a decision-support
-                            tool, alongside human judgment and additional verification methods.
-                        </p>
-                    </div>
+          {/* Accuracy & Limitations */}
+          <div className="warning-card">
+            <div className="warning-header">
+              <AlertTriangle className="warning-icon" size={40} />
+              <h2 className="warning-title">Accuracy & Limitations</h2>
+            </div>
+            <p className="warning-content">
+              While Thuliyam AI leverages advanced machine learning techniques,
+              no AI system can guarantee 100% accuracy. Here's what you need to know:
+            </p>
+            <ul className="warning-list">
+              <li className="warning-item">
+                <ArrowRight className="warning-bullet" size={20} />
+                <span>Results are probabilistic and should be interpreted as guidance, not absolute truth.</span>
+              </li>
+              <li className="warning-item">
+                <ArrowRight className="warning-bullet" size={20} />
+                <span>New or unseen manipulation techniques may reduce detection accuracy.</span>
+              </li>
+              <li className="warning-item">
+                <ArrowRight className="warning-bullet" size={20} />
+                <span>Image quality, compression, and resolution can affect results.</span>
+              </li>
+              <li className="warning-item">
+                <ArrowRight className="warning-bullet" size={20} />
+                <span>Real-time processing may have limitations with extremely large files.</span>
+              </li>
+            </ul>
+            <p className="warning-content">
+              We strongly recommend using Thuliyam AI as a decision-support
+              tool, alongside human judgment and additional verification methods.
+            </p>
+          </div>
 
-                    {/* Responsible AI */}
-                    <div className="mission-card">
-                        <div className="card-icon">
-                            <Shield size={28} />
-                        </div>
-                        <h2 className="card-title">Responsible AI Commitment</h2>
-                        <p className="card-content">
-                            Thuliyam AI is built with a strong commitment to ethical AI
-                            practices. We prioritize transparency, user privacy, and fairness.
-                            Uploaded images are processed securely with end-to-end encryption
-                            and are never reused for training without explicit consent.
-                        </p>
-                        <div className="features-list">
-                            <div className="feature-item">
-                                <Lock size={18} />
-                                <span>End-to-end encryption</span>
-                            </div>
-                            <div className="feature-item">
-                                <Users size={18} />
-                                <span>No data storage policy</span>
-                            </div>
-                            <div className="feature-item">
-                                <Globe size={18} />
-                                <span>Global accessibility</span>
-                            </div>
-                        </div>
-                    </div>
+          {/* Responsible AI */}
+          <div className="mission-card">
+            <div className="card-icon">
+              <Shield size={28} />
+            </div>
+            <h2 className="card-title">Responsible AI Commitment</h2>
+            <p className="card-content">
+              Thuliyam AI is built with a strong commitment to ethical AI
+              practices. We prioritize transparency, user privacy, and fairness.
+              Uploaded images are processed securely with end-to-end encryption
+              and are never reused for training without explicit consent.
+            </p>
+            <div className="features-list">
+              <div className="feature-item">
+                <Lock size={18} />
+                <span>End-to-end encryption</span>
+              </div>
+              <div className="feature-item">
+                <Users size={18} />
+                <span>No data storage policy</span>
+              </div>
+              <div className="feature-item">
+                <Globe size={18} />
+                <span>Global accessibility</span>
+              </div>
+            </div>
+          </div>
 
-                    {/* CTA Section */}
-                    <div className="cta-section">
-                        <h2 className="cta-title">Ready to Verify Authenticity?</h2>
-                        <p className="cta-subtitle">
-                            Start analyzing images with our advanced AI detection system
-                            and make informed decisions about digital content.
-                        </p>
-                        <Link href="/upload" className="oval-btn">
-                            <span>Start Analyzing Images</span>
-                        </Link>
-                    </div>
-                </div>
+          {/* CTA Section */}
+          <div className="cta-section">
+            <h2 className="cta-title">Ready to Verify Authenticity?</h2>
+            <p className="cta-subtitle">
+              Start analyzing images with our advanced AI detection system
+              and make informed decisions about digital content.
+            </p>
+            <Link href="/upload" className="oval-btn">
+              <span>Start Analyzing Images</span>
+            </Link>
+          </div>
+        </div>
 
-                <Footer />
-            </main>
-        </>
-    );
+        <Footer />
+      </main>
+    </>
+  );
 }
 
 // Additional CSS for stats and features
