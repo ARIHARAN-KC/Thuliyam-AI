@@ -8,7 +8,6 @@ export default function App({ Component, pageProps }: AppProps) {
       <Head>
         <title>Thuliyam AI</title>
         <link rel="icon" href="/logo.svg" />
-
         <meta name="google-site-verification" content={process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION} />
       </Head>
       <Component {...pageProps} />
