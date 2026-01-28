@@ -14,7 +14,6 @@ export default function App({ Component, pageProps }: AppProps) {
           name="google-site-verification"
           content={process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION}
         />
-
         {/* Google Analytics / GA4 */}
         {GA_MEASUREMENT_ID && (
           <>
