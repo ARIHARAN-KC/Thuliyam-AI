@@ -401,7 +401,7 @@ export default function Hero() {
         <div className="hero-content">
           <div className="hero-title-container">
             <h1>
-              AI-Powered Image Authenticity Detection
+              AI-Powered Authenticity Detection
             </h1>
           </div>
 
