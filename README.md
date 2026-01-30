@@ -156,10 +156,11 @@ Thuliyam AI provides **probabilistic assessments** only. Results should **not** 
 ---
 
 ## Author
-Ariharan K C
-Mail: ariharankc@gmail.com
-LinkedIn: https://www.linkedin.com/in/ariharankc07/
-Portfolio: https://ariharanportfoilo.vercel.app
+
+* Ariharan K C
+* Mail: ariharankc@gmail.com
+* LinkedIn: https://www.linkedin.com/in/ariharankc07/
+* Portfolio: https://ariharanportfoilo.vercel.app
 
 ## © License
 
