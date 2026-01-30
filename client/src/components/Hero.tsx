@@ -406,7 +406,7 @@ export default function Hero() {
           </div>
 
           <p className="hero-subtitle">
-            Thuliyam AI helps identify AI-generated and manipulated images using
+            Thuliyam AI helps identify AI-generated and manipulated contents using
             advanced machine learning models. Results are probabilistic and
             designed to assist human decision-making.
           </p>
@@ -459,7 +459,7 @@ export default function Hero() {
               <div className="stat-label">Accuracy Rate</div>
             </div>
             <div className="stat-item">
-              <div className="stat-value">1.4M+</div>
+              <div className="stat-value">19K+</div>
               <div className="stat-label">Images Analyzed</div>
             </div>
             <div className="stat-item">

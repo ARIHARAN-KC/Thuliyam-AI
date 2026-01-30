@@ -1,10 +1,20 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Upload, Shield, RefreshCw, AlertCircle, CheckCircle } from "lucide-react";
 import Image from "next/image";
 
+interface ApiResponse {
+  success: boolean;
+  label: string;  // Comes as "Real" or "Fake" (capitalized)
+  confidence: number;
+  scores?: {
+    fake: number;
+    real: number;
+  };
+}
+
 interface PredictionResult {
-  label: string;
+  label: string;  // Will be lowercase: 'real' or 'fake'
   confidence: number;
 }
 
@@ -21,6 +31,39 @@ export default function ImageUpload() {
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
+  
+  // Security enhancements
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const lastSubmissionRef = useRef<number>(0);
+  const submissionCooldown = 3000; // 3 seconds cooldown
+  const fileReaderRef = useRef<FileReader | null>(null);
+
+  // Cleanup function for memory management
+  const cleanup = () => {
+    // Clean up file reader
+    if (fileReaderRef.current) {
+      fileReaderRef.current.onloadend = null;
+      fileReaderRef.current.onerror = null;
+      fileReaderRef.current = null;
+    }
+    
+    // Clean up preview URL
+    if (preview && preview.startsWith('blob:')) {
+      URL.revokeObjectURL(preview);
+    }
+    
+    // Abort any pending requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+      abortControllerRef.current = null;
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      cleanup();
+    };
+  }, []);
 
   useEffect(() => {
     if (loading) {
@@ -39,6 +82,36 @@ export default function ImageUpload() {
     }
   }, [loading]);
 
+  // Strict file validation
+  const validateFile = (file: File): { valid: boolean; error?: string } => {
+    // Check file type
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    if (!validTypes.includes(file.type.toLowerCase())) {
+      return { valid: false, error: "Invalid file type. Only JPG, PNG, and WebP are allowed" };
+    }
+
+    // Check file size (10MB)
+    if (file.size > 10 * 1024 * 1024) {
+      return { valid: false, error: "File size must be less than 10MB" };
+    }
+
+    // Check for potential malicious files by extension
+    const fileName = file.name.toLowerCase();
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+    const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
+    
+    if (!hasValidExtension) {
+      return { valid: false, error: "Invalid file extension" };
+    }
+
+    // Additional security checks
+    if (file.size === 0) {
+      return { valid: false, error: "File is empty" };
+    }
+
+    return { valid: true };
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
     if (!selectedFile) return;
@@ -46,21 +119,35 @@ export default function ImageUpload() {
   };
 
   const handleFile = (selectedFile: File) => {
-    if (selectedFile.size > 10 * 1024 * 1024) {
-      setError("File size must be less than 10MB");
+    // Validate file
+    const validation = validateFile(selectedFile);
+    if (!validation.valid) {
+      setError(validation.error || "Invalid file");
       return;
     }
+
+    // Cleanup previous file
+    cleanup();
 
     setFile(selectedFile);
     setError("");
     setResult(null);
 
+    // Create new file reader with cleanup
     const reader = new FileReader();
+    fileReaderRef.current = reader;
+
     reader.onloadend = () => {
       if (typeof reader.result === "string") {
         setPreview(reader.result);
       }
     };
+
+    reader.onerror = () => {
+      setError("Failed to read file");
+      fileReaderRef.current = null;
+    };
+
     reader.readAsDataURL(selectedFile);
   };
 
@@ -79,7 +166,7 @@ export default function ImageUpload() {
     setIsDragging(false);
 
     const droppedFile = e.dataTransfer.files[0];
-    if (droppedFile && droppedFile.type.startsWith('image/')) {
+    if (droppedFile) {
       handleFile(droppedFile);
     } else {
       setError("Please upload a valid image file (JPG, PNG, WebP)");
@@ -87,8 +174,22 @@ export default function ImageUpload() {
   };
 
   const handleSubmit = async () => {
+    // Anti-spam submission guard
+    const now = Date.now();
+    if (now - lastSubmissionRef.current < submissionCooldown) {
+      setError("Please wait before submitting another request");
+      return;
+    }
+
     if (!file) {
       setError("Please select an image");
+      return;
+    }
+
+    // Validate file again before submission
+    const validation = validateFile(file);
+    if (!validation.valid) {
+      setError(validation.error || "Invalid file");
       return;
     }
 
@@ -96,6 +197,10 @@ export default function ImageUpload() {
     setError("");
     setResult(null);
     setScanProgress(0);
+    lastSubmissionRef.current = now;
+
+    // Create abort controller for the request
+    abortControllerRef.current = new AbortController();
 
     const progressInterval = setInterval(() => {
       setScanProgress(prev => {
@@ -111,31 +216,97 @@ export default function ImageUpload() {
     formData.append("file", file);
 
     try {
+      // HTTPS enforcement
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL;
+      if (!apiUrl || !apiUrl.startsWith('https://')) {
+        throw new Error("Secure connection required");
+      }
+
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/predict/image`,
+        `${apiUrl}/predict/image`,
         {
           method: "POST",
           body: formData,
+          signal: abortControllerRef.current.signal,
+          headers: {
+            // Security headers
+            'X-Requested-With': 'XMLHttpRequest',
+          }
         }
       );
 
-      if (!res.ok) throw new Error("Prediction failed");
+      if (!res.ok) {
+        if (res.status === 429) {
+          throw new Error("Too many requests. Please try again later.");
+        }
+        throw new Error(`Request failed with status: ${res.status}`);
+      }
 
-      const data: PredictionResult = await res.json();
-      setResult(data);
+      const contentType = res.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        throw new Error("Invalid response format");
+      }
+
+      // Parse API response
+      const apiData: ApiResponse = await res.json();
+      
+      // Validate response structure
+      if (!apiData || typeof apiData !== 'object') {
+        throw new Error("Invalid response structure");
+      }
+
+      if (!apiData.success) {
+        throw new Error("API request was not successful");
+      }
+
+      // Convert label to lowercase for consistency
+      const normalizedLabel = apiData.label.toLowerCase();
+      
+      // Validate label
+      const validLabels = ['real', 'fake'];
+      if (!validLabels.includes(normalizedLabel)) {
+        throw new Error(`Invalid label value: ${apiData.label}`);
+      }
+
+      // Validate confidence
+      if (typeof apiData.confidence !== 'number' || 
+          apiData.confidence < 0 || 
+          apiData.confidence > 1) {
+        throw new Error("Invalid confidence value");
+      }
+
+      // Create the result object
+      const resultData: PredictionResult = {
+        label: normalizedLabel,
+        confidence: apiData.confidence
+      };
+
+      setResult(resultData);
       setScanProgress(100);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Something went wrong");
+      
+    } catch (err: any) {
+      // Don't show error if request was aborted
+      if (err.name === 'AbortError') {
+        setError("Request was cancelled");
+      } else {
+        setError(err.message || "Something went wrong");
+        console.error("API Error:", err);
+      }
     } finally {
       setTimeout(() => {
         setLoading(false);
         clearInterval(progressInterval);
+        abortControllerRef.current = null;
       }, 500);
     }
   };
 
   const PieChart = ({ confidence, label }: PieChartProps) => {
-    const realPercent = label.toLowerCase() === "real" ? confidence : 100 - confidence;
+    // Ensure confidence is properly scaled (0-100)
+    const scaledConfidence = Math.min(100, Math.max(0, confidence * 100));
+    
+    // Calculate percentages based on label
+    const realPercent = label === "real" ? scaledConfidence : 100 - scaledConfidence;
     const fakePercent = 100 - realPercent;
 
     const radius = 75;
@@ -170,7 +341,7 @@ export default function ImageUpload() {
               cy="100"
               r={radius}
               fill="none"
-              stroke={label.toLowerCase() === "real" ? "url(#realGradient)" : "url(#fakeGradient)"}
+              stroke={label === "real" ? "url(#realGradient)" : "url(#fakeGradient)"}
               strokeWidth="12"
               strokeDasharray={`${realStroke} ${circumference}`}
               transform="rotate(-90 100 100)"
@@ -194,10 +365,10 @@ export default function ImageUpload() {
               textAnchor="middle"
               fontSize="32"
               fontWeight="800"
-              fill={label.toLowerCase() === "real" ? "#00F5A0" : "#FF6B9D"}
+              fill={label === "real" ? "#00F5A0" : "#FF6B9D"}
               className="chart-percentage"
             >
-              {confidence.toFixed(1)}%
+              {scaledConfidence.toFixed(1)}%
             </text>
           </svg>
         </div>
@@ -223,6 +394,15 @@ export default function ImageUpload() {
         </div>
       </div>
     );
+  };
+
+  const handleReset = () => {
+    cleanup();
+    setFile(null);
+    setPreview(null);
+    setResult(null);
+    setError("");
+    lastSubmissionRef.current = 0;
   };
 
   return (
@@ -886,7 +1066,7 @@ export default function ImageUpload() {
             >
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/jpg,image/png,image/webp"
                 onChange={handleFileChange}
                 id="file-upload"
               />
@@ -960,7 +1140,7 @@ export default function ImageUpload() {
                   <div className="chart-container">
                     <PieChart
                       label={result.label}
-                      confidence={result.confidence * 100}
+                      confidence={result.confidence}
                     />
                   </div>
                 </div>
@@ -991,12 +1171,7 @@ export default function ImageUpload() {
               </div>
 
               <button
-                onClick={() => {
-                  setFile(null);
-                  setPreview(null);
-                  setResult(null);
-                  setError("");
-                }}
+                onClick={handleReset}
                 className="reset-btn"
               >
                 <RefreshCw size={20} />

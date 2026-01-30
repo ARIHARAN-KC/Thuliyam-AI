@@ -550,7 +550,7 @@ export default function AboutPage() {
                 that are often invisible to the human eye.
               </p>
               <div className="stat-badge">
-                <span className="stat-value">1.4M+</span>
+                <span className="stat-value">19K+</span>
                 <span className="stat-label">Images Analyzed</span>
               </div>
             </div>
