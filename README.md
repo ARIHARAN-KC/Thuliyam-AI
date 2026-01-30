@@ -6,7 +6,7 @@
 
 **AI‑Powered Image Authenticity Detection Platform**
 
-Thuliyam AI helps identify **AI‑generated and manipulated images** using advanced machine learning models. The system provides **probabilistic results** designed to assist human decision‑making — not replace it.
+Thuliyam AI helps identify **AI‑generated and manipulated contents** using advanced machine learning models. The system provides **probabilistic results** designed to assist human decision‑making — not replace it.
 
 ---
 
