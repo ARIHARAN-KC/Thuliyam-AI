@@ -5,21 +5,21 @@ interface SEOProps {
   description: string;
   url?: string;
   image?: string;
-  keywords?: string; // Added this line
-  pageType?: string; // Added this line
+  keywords?: string;
+  pageType?: string;
 }
 
-const SEO: React.FC<SEOProps> = ({ 
-  title, 
-  description, 
-  url, 
+const SEO: React.FC<SEOProps> = ({
+  title,
+  description,
+  url,
   image,
   keywords,
-  pageType = "website"
+  pageType = "website",
 }) => {
+  const siteName = "Thuliyam AI";
   const siteUrl = url || "https://thuliyam-ai.vercel.app";
   const previewImage = image || "https://thuliyam-ai.vercel.app/logo.png";
-  const siteName = "Thuliyam AI";
   const fullTitle = `${title} | ${siteName}`;
 
   return (
@@ -29,11 +29,15 @@ const SEO: React.FC<SEOProps> = ({
       <meta name="title" content={fullTitle} />
       <meta name="description" content={description} />
       {keywords && <meta name="keywords" content={keywords} />}
-      
-      {/* Canonical URL */}
+
+      {/* Site Name Signals (VERY IMPORTANT) */}
+      <meta name="application-name" content={siteName} />
+      <meta name="apple-mobile-web-app-title" content={siteName} />
+
+      {/* Canonical */}
       <link rel="canonical" href={siteUrl} />
 
-      {/* Open Graph / Facebook */}
+      {/* Open Graph */}
       <meta property="og:type" content={pageType} />
       <meta property="og:url" content={siteUrl} />
       <meta property="og:title" content={fullTitle} />
@@ -43,15 +47,28 @@ const SEO: React.FC<SEOProps> = ({
 
       {/* Twitter */}
       <meta name="twitter:card" content="summary_large_image" />
-      <meta name="twitter:url" content={siteUrl} />
       <meta name="twitter:title" content={fullTitle} />
       <meta name="twitter:description" content={description} />
       <meta name="twitter:image" content={previewImage} />
 
-      {/* Additional Meta Tags */}
+      {/* Additional */}
       <meta name="robots" content="index, follow" />
+      <meta name="author" content={siteName} />
       <meta name="language" content="English" />
-      <meta name="author" content="Thuliyam AI" />
+
+      {/* Structured Data (Google Site Name Fix) */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: siteName,
+            alternateName: "Thuliyam AI Deepfake Detection",
+            url: siteUrl,
+          }),
+        }}
+      />
     </Head>
   );
 };
