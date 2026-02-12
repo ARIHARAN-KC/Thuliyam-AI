@@ -7,3 +7,9 @@ model
 stable-diffusion-face-dataset
 trained_model
 model_training\final_dataset\test\fake\faceswap
+FaceForensics-DS
+Google-DS
+video_final_dataset
+video_swin_dataset
+FaceForensics++_C23\DeepFakeDetection
+best_swin_model.pth

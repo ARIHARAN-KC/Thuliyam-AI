@@ -25,7 +25,7 @@ export default function SupportCenter() {
     {
       id: 3,
       question: "How do I report an issue or bug?",
-      answer: "You can report issues directly through our support portal, or email support@thuliyamai.com. For faster resolution, please include: 1) Screenshots of the error, 2) Exact error messages, 3) Steps to reproduce the issue, and 4) Your browser/OS version. Our team typically responds within 24 hours.",
+      answer: "You can report issues directly through our support portal, or email ariharankc@gmail.com. For faster resolution, please include: 1) Screenshots of the error, 2) Exact error messages, 3) Steps to reproduce the issue, and 4) Your browser/OS version. Our team typically responds within 24 hours.",
       category: "Technical",
       icon: <Shield size={18} />
     },
@@ -57,26 +57,26 @@ export default function SupportCenter() {
       title: "Email Support",
       description: "Get detailed assistance via email with our support team",
       responseTime: "Within 24 hours",
-      contact: "support@thuliyamai.com",
+      contact: "ariharankc@gmail.com",
       icon: <Mail size={24} />,
       gradient: "from-green-500 to-blue-500"
     },
-    {
-      title: "Live Chat",
-      description: "Instant chat support during business hours",
-      responseTime: "Immediate",
-      contact: "Available in dashboard",
-      icon: <MessageSquare size={24} />,
-      gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      title: "Phone Support",
-      description: "Speak directly with our technical support team",
-      responseTime: "Within 30 minutes",
-      contact: "+1 (555) 123-4567",
-      icon: <Phone size={24} />,
-      gradient: "from-orange-500 to-red-500"
-    }
+    // {
+    //   title: "Live Chat",
+    //   description: "Instant chat support during business hours",
+    //   responseTime: "Immediate",
+    //   contact: "Available in dashboard",
+    //   icon: <MessageSquare size={24} />,
+    //   gradient: "from-purple-500 to-pink-500"  
+    // },
+    // {
+    //   title: "Phone Support",
+    //   description: "Speak directly with our technical support team",
+    //   responseTime: "Within 30 minutes",
+    //   contact: "+1 (555) 123-4567",
+    //   icon: <Phone size={24} />,
+    //   gradient: "from-orange-500 to-red-500"
+    // }
   ];
 
   const helpResources = [

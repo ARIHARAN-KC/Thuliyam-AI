@@ -6,3 +6,8 @@ client\.next
 client\node_modules
 client\.env.local
 model_training\.venv
+model_training\FaceForensics-DS
+model_training\Google-DS
+model_training\video_final_dataset
+model_training\video_swin_dataset
+model_training\best_swin_model.pth

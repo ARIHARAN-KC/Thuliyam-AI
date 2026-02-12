@@ -1,6 +1,6 @@
 import os
 
-FOLDER_PATH = r"video_final_dataset\validation\real"
+FOLDER_PATH = r"video_final_dataset\test\fake"
 
 VALID_EXTS = (".jpg")
 
@@ -9,5 +9,5 @@ count = sum(
     if f.lower().endswith(VALID_EXTS)
 )
 
-print(f"Total images in folder {FOLDER_PATH}: {count}")
+print(f"Total vidoes in folder {FOLDER_PATH}: {count}")
  
