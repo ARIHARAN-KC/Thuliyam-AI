@@ -102,7 +102,6 @@ Web Interface
 * Designed for:
 
   * Media verification
-  * HR screening
   * Digital forensics
   * Enterprise workflows
 * Unlimited scalability
@@ -129,7 +128,6 @@ Web Interface
 
 ## Security & Privacy
 
-* 256‑bit encryption
 * Secure HTTPS communication
 * No image storage or reuse
 * Military‑grade privacy protection
