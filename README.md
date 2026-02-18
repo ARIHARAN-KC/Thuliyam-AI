@@ -135,16 +135,6 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 
 ---
 
-## Resources
-
-* Documentation
-* Research Papers
-* Case Studies
-* API Documentation
-* Support Center
-
----
-
 ## Disclaimer
 
 Thuliyam AI provides **probabilistic assessments** only. Results should **not** be considered definitive proof of authenticity or manipulation.
@@ -182,7 +172,7 @@ Thuliyam AI is expanding beyond image analysis to become a **full‑spectrum mul
 
 ### Video Authenticity Detection
 
-* Deepfake video detection using temporal and spatial analysis
+* Deepfake video detection
 * Frame‑level and sequence‑level confidence scoring
 * Support for major video formats
 
