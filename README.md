@@ -191,6 +191,8 @@ Thuliyam AI provides **probabilistic assessments** only. Results should **not** 
 * LinkedIn: https://www.linkedin.com/in/ariharankc07/
 * Portfolio: https://ariharanportfoilo.vercel.app
 
+---
+
 ## © License
 
 © 2026 Thuliyam AI. All rights reserved.
