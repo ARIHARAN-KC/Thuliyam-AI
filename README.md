@@ -53,11 +53,11 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 ## Quick Start
 Web Interface
 
-Open the Thuliyam AI web application
+1) Open the Thuliyam AI web application
 
-Upload an image using drag & drop or file selection
+2) Upload an image using drag & drop or file selection
 
-Receive a probability-based authenticity score in seconds
+3) Receive a probability-based authenticity score in seconds
 
 ---
 
