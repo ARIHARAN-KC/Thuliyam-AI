@@ -50,6 +50,17 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 
 ---
 
+## Quick Start
+Web Interface
+
+Open the Thuliyam AI web application
+
+Upload an image using drag & drop or file selection
+
+Receive a probability-based authenticity score in seconds
+
+---
+
 ## How It Works
 
 ### 1️ Upload Image
@@ -135,6 +146,30 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 
 ---
 
+## For Models / Open-Source Collaboration
+
+Thuliyam AI welcomes research collaboration, open-source contributions, and community-driven model development.
+
+We are open to collaboration on:
+
+Detection models and datasets
+
+Research partnerships in AI-generated media detection
+
+Benchmarking, evaluations, and reproducibility studies
+
+Open-source tools for media authenticity
+
+Self-hosted or research-only deployments
+
+  Email: ariharankc@gmail.com
+
+  LinkedIn: https://www.linkedin.com/in/ariharankc07/
+
+We actively support initiatives that promote transparent, ethical, and verifiable AI, and welcome contributors working to strengthen digital trust in the age of generative media.
+
+---
+
 ## Disclaimer
 
 Thuliyam AI provides **probabilistic assessments** only. Results should **not** be considered definitive proof of authenticity or manipulation.
@@ -158,11 +193,9 @@ Thuliyam AI provides **probabilistic assessments** only. Results should **not** 
 
 ## © License
 
-© 2026 **Thuliyam AI**. All rights reserved.
+© 2026 Thuliyam AI. All rights reserved.
 
----
-
-**Thuliyam AI** — Ensuring trust in the age of AI‑generated media.
+Open-source components, research artifacts, and community tools will be released under a permissive open-source license (license details forthcoming).
 
 ---
 
@@ -189,3 +222,7 @@ Thuliyam AI is expanding beyond image analysis to become a **full‑spectrum mul
 * Support for common audio formats
 
 > All upcoming modalities will follow the same principles: **probability‑based results, real‑time analysis, and strict privacy guarantees**.
+
+---
+
+Thuliyam AI — Ensuring trust in the age of AI-generated media.
