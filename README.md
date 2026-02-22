@@ -4,7 +4,7 @@
   <p><strong>AI-Powered Image Authenticity Detection Platform</strong></p>
 </div>
 
-**AI‑Powered Image Authenticity Detection Platform**
+**AI‑Powered Deepfake Detection Platform**
 
 Thuliyam AI helps identify **AI‑generated and manipulated contents** using advanced machine learning models. The system provides **probabilistic results** designed to assist human decision‑making — not replace it.
 
