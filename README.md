@@ -1,7 +1,7 @@
 <div align="center">
   <img src="./client/public/logo.svg" alt="Thuliyam AI Logo" width="140" />
   <h1>Thuliyam AI</h1>
-  <p><strong>AI-Powered Image Authenticity Detection Platform</strong></p>
+  <p><strong>AI-Powered Deepfake Detection Platform</strong></p>
 </div>
 
 **AI‑Powered Deepfake Detection Platform**
