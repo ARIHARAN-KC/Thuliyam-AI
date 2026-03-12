@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { Upload, Shield, RefreshCw, AlertCircle, CheckCircle, Image as ImageIcon, Maximize2 } from "lucide-react";
+import { Upload, Shield, RefreshCw, AlertCircle, CheckCircle, Film, Clock, FileVideo } from "lucide-react";
 import Image from "next/image";
 
 interface ApiResponse {
@@ -23,13 +23,13 @@ interface PieChartProps {
   label: string;
 }
 
-interface ImageMetadata {
+interface VideoMetadata {
+  duration: number;
   dimensions: { width: number; height: number };
   size: string;
-  type: string;
 }
 
-export default function ImageUpload() {
+export default function VideoUpload() {
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -37,24 +37,17 @@ export default function ImageUpload() {
   const [error, setError] = useState("");
   const [isDragging, setIsDragging] = useState(false);
   const [scanProgress, setScanProgress] = useState(0);
-  const [imageMetadata, setImageMetadata] = useState<ImageMetadata | null>(null);
+  const [videoMetadata, setVideoMetadata] = useState<VideoMetadata | null>(null);
+  const [isVideoPlaying, setIsVideoPlaying] = useState(false);
   
   // Refs
-  const imgRef = useRef<HTMLImageElement | null>(null);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
   const lastSubmissionRef = useRef<number>(0);
   const submissionCooldown = 3000; // 3 seconds cooldown
-  const fileReaderRef = useRef<FileReader | null>(null);
 
   // Cleanup function for memory management
   const cleanup = () => {
-    // Clean up file reader
-    if (fileReaderRef.current) {
-      fileReaderRef.current.onloadend = null;
-      fileReaderRef.current.onerror = null;
-      fileReaderRef.current = null;
-    }
-    
     // Clean up preview URL
     if (preview && preview.startsWith('blob:')) {
       URL.revokeObjectURL(preview);
@@ -90,38 +83,38 @@ export default function ImageUpload() {
     }
   }, [loading]);
 
-  // Extract image metadata
-  const extractImageMetadata = (imgElement: HTMLImageElement): ImageMetadata => {
+  // Extract video metadata
+  const extractVideoMetadata = (videoElement: HTMLVideoElement): VideoMetadata => {
     return {
+      duration: videoElement.duration,
       dimensions: {
-        width: imgElement.naturalWidth,
-        height: imgElement.naturalHeight
+        width: videoElement.videoWidth,
+        height: videoElement.videoHeight
       },
-      size: file ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' : 'Unknown',
-      type: file ? file.type.split('/')[1].toUpperCase() : 'Unknown'
+      size: file ? (file.size / (1024 * 1024)).toFixed(2) + ' MB' : 'Unknown'
     };
   };
 
-  // Strict file validation
+  // Strict file validation for videos
   const validateFile = (file: File): { valid: boolean; error?: string } => {
     // Check file type
-    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const validTypes = ['video/mp4', 'video/quicktime', 'video/x-msvideo', 'video/webm'];
     if (!validTypes.includes(file.type.toLowerCase())) {
-      return { valid: false, error: "Invalid file type. Only JPG, PNG, and WebP are allowed" };
+      return { valid: false, error: "Invalid file type. Only MP4, MOV, AVI, and WebM videos are allowed" };
     }
 
-    // Check file size (10MB)
-    if (file.size > 10 * 1024 * 1024) {
-      return { valid: false, error: "File size must be less than 10MB" };
+    // Check file size (100MB for videos)
+    if (file.size > 100 * 1024 * 1024) {
+      return { valid: false, error: "File size must be less than 100MB" };
     }
 
     // Check for potential malicious files by extension
     const fileName = file.name.toLowerCase();
-    const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+    const validExtensions = ['.mp4', '.mov', '.avi', '.webm'];
     const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
     
     if (!hasValidExtension) {
-      return { valid: false, error: "Invalid file extension" };
+      return { valid: false, error: "Invalid file extension. Please upload a video file" };
     }
 
     // Additional security checks
@@ -152,24 +145,12 @@ export default function ImageUpload() {
     setFile(selectedFile);
     setError("");
     setResult(null);
-    setImageMetadata(null);
+    setVideoMetadata(null);
+    setIsVideoPlaying(false);
 
-    // Create new file reader with cleanup
-    const reader = new FileReader();
-    fileReaderRef.current = reader;
-
-    reader.onloadend = () => {
-      if (typeof reader.result === "string") {
-        setPreview(reader.result);
-      }
-    };
-
-    reader.onerror = () => {
-      setError("Failed to read file");
-      fileReaderRef.current = null;
-    };
-
-    reader.readAsDataURL(selectedFile);
+    // Create video preview
+    const videoUrl = URL.createObjectURL(selectedFile);
+    setPreview(videoUrl);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -190,15 +171,23 @@ export default function ImageUpload() {
     if (droppedFile) {
       handleFile(droppedFile);
     } else {
-      setError("Please upload a valid image file (JPG, PNG, WebP)");
+      setError("Please upload a valid video file (MP4, MOV, AVI, WebM)");
     }
   };
 
-  const handleImageLoad = () => {
-    if (imgRef.current && file) {
-      const metadata = extractImageMetadata(imgRef.current);
-      setImageMetadata(metadata);
+  const handleVideoLoaded = () => {
+    if (videoRef.current && file) {
+      const metadata = extractVideoMetadata(videoRef.current);
+      setVideoMetadata(metadata);
     }
+  };
+
+  const handleVideoPlay = () => {
+    setIsVideoPlaying(true);
+  };
+
+  const handleVideoPause = () => {
+    setIsVideoPlaying(false);
   };
 
   const handleSubmit = async () => {
@@ -210,7 +199,7 @@ export default function ImageUpload() {
     }
 
     if (!file) {
-      setError("Please select an image");
+      setError("Please select a video");
       return;
     }
 
@@ -256,7 +245,7 @@ export default function ImageUpload() {
       }
 
       const res = await fetch(
-        `${apiUrl}/predict/image`,
+        `${apiUrl}/predict/video`,
         {
           method: "POST",
           body: formData,
@@ -271,6 +260,12 @@ export default function ImageUpload() {
       if (!res.ok) {
         if (res.status === 429) {
           throw new Error("Too many requests. Please try again later.");
+        }
+        if (res.status === 413) {
+          throw new Error("File too large. Please upload a smaller video.");
+        }
+        if (res.status === 415) {
+          throw new Error("Unsupported media type. Please upload a valid video format.");
         }
         throw new Error(`Request failed with status: ${res.status}`);
       }
@@ -435,36 +430,55 @@ export default function ImageUpload() {
     setPreview(null);
     setResult(null);
     setError("");
-    setImageMetadata(null);
+    setVideoMetadata(null);
+    setIsVideoPlaying(false);
     lastSubmissionRef.current = 0;
   };
 
-  // Function to render image preview with metadata
-  const renderImagePreview = () => {
+  // Format duration from seconds to MM:SS
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  // Function to render video preview with metadata
+  const renderVideoPreview = () => {
     if (!preview) return null;
     
     return (
-      <div className="image-preview-wrapper">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          ref={imgRef}
+      <div className="video-preview-wrapper">
+        <video 
+          ref={videoRef}
           src={preview} 
-          alt="Preview" 
-          className="image-preview"
-          onLoad={handleImageLoad}
+          controls 
+          className="video-preview"
+          onLoadedMetadata={handleVideoLoaded}
+          onPlay={handleVideoPlay}
+          onPause={handleVideoPause}
+          style={{ maxWidth: '100%', maxHeight: '100%' }}
         />
-        {imageMetadata && (
-          <div className="image-metadata">
+        {videoMetadata && (
+          <div className="video-metadata">
             <div className="metadata-item">
-              <Maximize2 size={14} />
-              <span>{imageMetadata.dimensions.width} x {imageMetadata.dimensions.height}</span>
+              <Film size={14} />
+              <span>{videoMetadata.dimensions.width}x{videoMetadata.dimensions.height}</span>
             </div>
             <div className="metadata-item">
-              <ImageIcon size={14} />
-              <span>{imageMetadata.type}</span>
+              <Clock size={14} />
+              <span>{formatDuration(videoMetadata.duration)}</span>
             </div>
             <div className="metadata-item">
-              <span className="metadata-size">{imageMetadata.size}</span>
+              <FileVideo size={14} />
+              <span>{videoMetadata.size}</span>
+            </div>
+          </div>
+        )}
+        {!isVideoPlaying && (
+          <div className="video-overlay">
+            <div className="play-indicator">
+              <div className="play-icon">▶</div>
+              <span>Click to preview video</span>
             </div>
           </div>
         )}
@@ -777,7 +791,7 @@ export default function ImageUpload() {
           }
         }
 
-        .image-section,
+        .video-section,
         .chart-section {
           display: flex;
           flex-direction: column;
@@ -811,7 +825,7 @@ export default function ImageUpload() {
           position: relative;
         }
 
-        .image-preview-wrapper {
+        .video-preview-wrapper {
           width: 100%;
           height: 100%;
           position: relative;
@@ -819,17 +833,14 @@ export default function ImageUpload() {
           flex-direction: column;
         }
 
-        .image-preview {
-          max-width: 100%;
-          max-height: 100%;
-          width: auto;
-          height: auto;
+        .video-preview {
+          width: 100%;
+          height: 100%;
           object-fit: contain;
           border-radius: 12px;
-          margin: auto;
         }
 
-        .image-metadata {
+        .video-metadata {
           position: absolute;
           bottom: 1rem;
           left: 1rem;
@@ -869,11 +880,59 @@ export default function ImageUpload() {
           color: #00F5A0;
         }
 
-        .metadata-size {
-          background: rgba(0, 245, 160, 0.1);
-          padding: 0.25rem 0.75rem;
+        .video-overlay {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background: rgba(0, 0, 0, 0.5);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 12px;
+          pointer-events: none;
+        }
+
+        .play-indicator {
+          background: rgba(0, 0, 0, 0.7);
+          backdrop-filter: blur(10px);
+          padding: 1rem 2rem;
           border-radius: 50px;
+          display: flex;
+          align-items: center;
+          gap: 1rem;
+          border: 1px solid rgba(255, 255, 255, 0.2);
+          color: white;
+          font-size: 1rem;
+          animation: pulse 2s infinite;
+        }
+
+        .play-icon {
+          width: 32px;
+          height: 32px;
+          background: rgba(0, 245, 160, 0.2);
+          border-radius: 50%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-size: 14px;
           color: #00F5A0;
+        }
+
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(0, 245, 160, 0.4);
+          }
+          70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(0, 245, 160, 0);
+          }
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(0, 245, 160, 0);
+          }
         }
 
         .chart-container {
@@ -1083,16 +1142,6 @@ export default function ImageUpload() {
           border-radius: 50px;
         }
 
-        .placeholder-content {
-          text-align: center;
-          color: rgba(255, 255, 255, 0.5);
-        }
-
-        .placeholder-content svg {
-          margin-bottom: 1rem;
-          opacity: 0.3;
-        }
-
         @media (max-width: 1024px) {
           .container {
             padding: 1rem;
@@ -1164,7 +1213,7 @@ export default function ImageUpload() {
             max-width: 200px;
           }
 
-          .image-metadata {
+          .video-metadata {
             flex-wrap: wrap;
             gap: 0.75rem;
             padding: 0.5rem;
@@ -1207,6 +1256,11 @@ export default function ImageUpload() {
             font-size: 0.8rem;
             padding: 0 1rem;
           }
+
+          .play-indicator {
+            padding: 0.75rem 1.5rem;
+            font-size: 0.9rem;
+          }
         }
       `}</style>
 
@@ -1224,8 +1278,8 @@ export default function ImageUpload() {
               <h1>Thuliyam AI</h1>
             </div>
             <p className="subtitle">
-              Detect AI-generated and manipulated images using advanced machine learning.
-              Upload an image to receive a probabilistic authenticity assessment.
+              Detect AI-generated and manipulated videos using advanced machine learning.
+              Upload a video to receive a probabilistic authenticity assessment.
             </p>
           </div>
 
@@ -1238,7 +1292,7 @@ export default function ImageUpload() {
             >
               <input
                 type="file"
-                accept="image/jpeg,image/jpg,image/png,image/webp"
+                accept="video/mp4,video/quicktime,video/x-msvideo,video/webm"
                 onChange={handleFileChange}
                 id="file-upload"
               />
@@ -1249,7 +1303,7 @@ export default function ImageUpload() {
                 <div>
                   <div>Drag & drop or click to upload</div>
                   <div className="upload-hint">
-                    Supports: JPG, PNG, WebP • Max 10MB • Secure Processing
+                    Supports: MP4, MOV, AVI, WebM • Max 100MB • Secure Processing
                   </div>
                 </div>
               </label>
@@ -1258,7 +1312,7 @@ export default function ImageUpload() {
             {file && !result && (
               <div className="file-info">
                 <div className="file-name">
-                  <ImageIcon size={16} />
+                  <Film size={16} />
                   <span>{file.name}</span>
                 </div>
                 <div className="file-size">
@@ -1285,7 +1339,7 @@ export default function ImageUpload() {
                 {loading ? (
                   <div className="loading-container">
                     <div className="loading-spinner"></div>
-                    <span>Scanning Image...</span>
+                    <span>Analyzing Video...</span>
                   </div>
                 ) : (
                   <>
@@ -1306,13 +1360,13 @@ export default function ImageUpload() {
           {preview && (
             <>
               <div className="content-grid">
-                <div className="image-section">
+                <div className="video-section">
                   <div className="section-label">
                     <Upload size={20} />
-                    Uploaded Image
+                    Uploaded Video
                   </div>
                   <div className="preview-container">
-                    {renderImagePreview()}
+                    {renderVideoPreview()}
                   </div>
                 </div>
 
@@ -1328,8 +1382,8 @@ export default function ImageUpload() {
                         confidence={result.confidence}
                       />
                     ) : (
-                      <div className="placeholder-content">
-                        <Shield size={48} />
+                      <div style={{ textAlign: 'center', color: 'rgba(255,255,255,0.5)' }}>
+                        <Shield size={48} style={{ marginBottom: '1rem', opacity: 0.3 }} />
                         <p>Click "Analyze Authenticity" to see results</p>
                       </div>
                     )}
@@ -1343,12 +1397,12 @@ export default function ImageUpload() {
                     {result.label === 'real' ? (
                       <>
                         <CheckCircle className="result-icon" size={32} />
-                        <div className="result-label">LIKELY REAL IMAGE</div>
+                        <div className="result-label">LIKELY REAL VIDEO</div>
                       </>
                     ) : (
                       <>
                         <AlertCircle className="result-icon" size={32} />
-                        <div className="result-label">LIKELY FAKE IMAGE</div>
+                        <div className="result-label">LIKELY FAKE VIDEO</div>
                       </>
                     )}
                   </div>
@@ -1368,7 +1422,7 @@ export default function ImageUpload() {
                 className="reset-btn"
               >
                 <RefreshCw size={20} />
-                Scan Another Image
+                Analyze Another Video
               </button>
             </>
           )}
@@ -1376,7 +1430,7 @@ export default function ImageUpload() {
           {!preview && !result && (
             <div className="security-badge">
               <Shield size={16} />
-              <span>Images are processed securely and are not stored after analysis</span>
+              <span>Videos are processed securely and are not stored after analysis</span>
             </div>
           )}
           

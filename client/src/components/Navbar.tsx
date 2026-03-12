@@ -881,7 +881,7 @@ export default function Navbar() {
                   </div>
                 </Link>
                 <Link
-                  href="/features/about-features"
+                  href="/analyze/video"
                   className="dropdown-item"
                   onClick={() => setIsAnalyzeOpen(false)}
                   role="menuitem"
@@ -991,7 +991,7 @@ export default function Navbar() {
                       </div>
                     </Link>
                     <Link
-                      href="/features/about-features"
+                      href="/analyze/video"
                       className="mobile-dropdown-item"
                       onClick={() => setIsMobileMenuOpen(false)}
                       role="menuitem"

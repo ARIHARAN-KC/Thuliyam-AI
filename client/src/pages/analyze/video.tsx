@@ -1,8 +1,8 @@
 import Navbar from "@/components/Navbar";
 import SEO from "@/components/seo";
-import ImageUpload from "@/components/ImageUpload";
+import VideoUpload from "@/components/VideoUpload";
 
-export default function ImageAnalyzePage() {
+export default function VideoAnalyzePage() {
   return (
     <>
       <SEO
@@ -13,7 +13,7 @@ export default function ImageAnalyzePage() {
         pageType="website"
       />
       <Navbar />
-      <ImageUpload />
+      <VideoUpload />
     </>
   );
 }

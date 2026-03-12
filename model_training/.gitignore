@@ -13,3 +13,15 @@ video_final_dataset
 video_swin_dataset
 FaceForensics++_C23\DeepFakeDetection
 best_swin_model.pth
+deepfake_face_dataset
+deepfake_video_dataset
+deepfake_video_frames
+deepfake_video_model
+video_dataset_pro
+video_swin_dataset.zip
+video_dataset_pro.zip
+swin_video_model.pt
+yolov8n.pt
+video_dataset_pro.zip
+video_swin_dataset.zip
+.vscode

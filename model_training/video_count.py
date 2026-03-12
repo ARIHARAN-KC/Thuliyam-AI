@@ -1,8 +1,8 @@
 import os
 
-FOLDER_PATH = r"video_final_dataset\test\fake"
+FOLDER_PATH = r"deepfake_video_dataset\val\real"
 
-VALID_EXTS = (".jpg")
+VALID_EXTS = (".mp4")
 
 count = sum(
     1 for f in os.listdir(FOLDER_PATH)
