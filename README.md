@@ -1,10 +1,10 @@
 <div align="center">
   <img src="./client/public/logo.svg" alt="Thuliyam AI Logo" width="140" />
   <h1>Thuliyam AI</h1>
-  <p><strong>AI-Powered Image Authenticity Detection Platform</strong></p>
+  <p><strong>AI-Powered Deepfake Detection Platform</strong></p>
 </div>
 
-**AI‑Powered Image Authenticity Detection Platform**
+**AI‑Powered Deepfake Detection Platform**
 
 Thuliyam AI helps identify **AI‑generated and manipulated contents** using advanced machine learning models. The system provides **probabilistic results** designed to assist human decision‑making — not replace it.
 
@@ -50,6 +50,17 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 
 ---
 
+## Quick Start
+Web Interface
+
+1) Open the Thuliyam AI web application
+
+2) Upload an image using drag & drop or file selection
+
+3) Receive a probability-based authenticity score in seconds
+
+---
+
 ## How It Works
 
 ### 1️ Upload Image
@@ -91,7 +102,6 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 * Designed for:
 
   * Media verification
-  * HR screening
   * Digital forensics
   * Enterprise workflows
 * Unlimited scalability
@@ -118,7 +128,6 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 
 ## Security & Privacy
 
-* 256‑bit encryption
 * Secure HTTPS communication
 * No image storage or reuse
 * Military‑grade privacy protection
@@ -135,13 +144,27 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 
 ---
 
-## Resources
+## For Models / Open-Source Collaboration
 
-* Documentation
-* Research Papers
-* Case Studies
-* API Documentation
-* Support Center
+Thuliyam AI welcomes research collaboration, open-source contributions, and community-driven model development.
+
+We are open to collaboration on:
+
+Detection models and datasets
+
+Research partnerships in AI-generated media detection
+
+Benchmarking, evaluations, and reproducibility studies
+
+Open-source tools for media authenticity
+
+Self-hosted or research-only deployments
+
+  Email: ariharankc@gmail.com
+
+  LinkedIn: https://www.linkedin.com/in/ariharankc07/
+
+We actively support initiatives that promote transparent, ethical, and verifiable AI, and welcome contributors working to strengthen digital trust in the age of generative media.
 
 ---
 
@@ -166,13 +189,13 @@ Thuliyam AI provides **probabilistic assessments** only. Results should **not** 
 * LinkedIn: https://www.linkedin.com/in/ariharankc07/
 * Portfolio: https://ariharanportfoilo.vercel.app
 
-## © License
-
-© 2026 **Thuliyam AI**. All rights reserved.
-
 ---
 
-**Thuliyam AI** — Ensuring trust in the age of AI‑generated media.
+## © License
+
+© 2026 Thuliyam AI. All rights reserved.
+
+Open-source components, research artifacts, and community tools will be released under a permissive open-source license (license details forthcoming).
 
 ---
 
@@ -182,7 +205,7 @@ Thuliyam AI is expanding beyond image analysis to become a **full‑spectrum mul
 
 ### Video Authenticity Detection
 
-* Deepfake video detection using temporal and spatial analysis
+* Deepfake video detection
 * Frame‑level and sequence‑level confidence scoring
 * Support for major video formats
 
@@ -199,3 +222,7 @@ Thuliyam AI is expanding beyond image analysis to become a **full‑spectrum mul
 * Support for common audio formats
 
 > All upcoming modalities will follow the same principles: **probability‑based results, real‑time analysis, and strict privacy guarantees**.
+
+---
+
+Thuliyam AI — Ensuring trust in the age of AI-generated media.
