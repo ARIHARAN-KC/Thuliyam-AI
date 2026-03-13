@@ -504,9 +504,9 @@ export default function HowItWorks() {
                 <div className="step-number-glow"></div>
                 1
               </div>
-              <h3 className="step-title">Upload Image</h3>
+              <h3 className="step-title">Upload Content</h3>
               <p className="step-description">
-                Select or drag-and-drop any image you want to analyze for authenticity
+                Select or drag-and-drop any content you want to analyze for authenticity
               </p>
               <ul className="step-features">
                 <li className="step-feature">
