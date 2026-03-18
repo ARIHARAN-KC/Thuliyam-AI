@@ -1431,6 +1431,7 @@ export default function VideoUpload() {
             <div className="security-badge">
               <Shield size={16} />
               <span>Videos are processed securely and are not stored after analysis</span>
+              <span>Video model (Beta) – currently in testing phase. Available Soon</span>
             </div>
           )}
           
