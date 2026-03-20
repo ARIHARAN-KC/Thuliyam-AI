@@ -39,7 +39,7 @@ export default function VideoUpload() {
   const [scanProgress, setScanProgress] = useState(0);
   const [videoMetadata, setVideoMetadata] = useState<VideoMetadata | null>(null);
   const [isVideoPlaying, setIsVideoPlaying] = useState(false);
-  
+
   // Refs
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -52,7 +52,7 @@ export default function VideoUpload() {
     if (preview && preview.startsWith('blob:')) {
       URL.revokeObjectURL(preview);
     }
-    
+
     // Abort any pending requests
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
@@ -112,7 +112,7 @@ export default function VideoUpload() {
     const fileName = file.name.toLowerCase();
     const validExtensions = ['.mp4', '.mov', '.avi', '.webm'];
     const hasValidExtension = validExtensions.some(ext => fileName.endsWith(ext));
-    
+
     if (!hasValidExtension) {
       return { valid: false, error: "Invalid file extension. Please upload a video file" };
     }
@@ -277,7 +277,7 @@ export default function VideoUpload() {
 
       // Parse API response
       const apiData: ApiResponse = await res.json();
-      
+
       // Validate response structure
       if (!apiData || typeof apiData !== 'object') {
         throw new Error("Invalid response structure");
@@ -289,7 +289,7 @@ export default function VideoUpload() {
 
       // Convert label to lowercase for consistency
       const normalizedLabel = apiData.label.toLowerCase();
-      
+
       // Validate label
       const validLabels = ['real', 'fake'];
       if (!validLabels.includes(normalizedLabel)) {
@@ -297,9 +297,9 @@ export default function VideoUpload() {
       }
 
       // Validate confidence
-      if (typeof apiData.confidence !== 'number' || 
-          apiData.confidence < 0 || 
-          apiData.confidence > 1) {
+      if (typeof apiData.confidence !== 'number' ||
+        apiData.confidence < 0 ||
+        apiData.confidence > 1) {
         throw new Error("Invalid confidence value");
       }
 
@@ -311,7 +311,7 @@ export default function VideoUpload() {
 
       setResult(resultData);
       setScanProgress(100);
-      
+
     } catch (err: any) {
       // Don't show error if request was aborted
       if (err.name === 'AbortError') {
@@ -332,7 +332,7 @@ export default function VideoUpload() {
   const PieChart = ({ confidence, label }: PieChartProps) => {
     // Ensure confidence is properly scaled (0-100)
     const scaledConfidence = Math.min(100, Math.max(0, confidence * 100));
-    
+
     // Calculate percentages based on label
     const realPercent = label === "real" ? scaledConfidence : 100 - scaledConfidence;
     const fakePercent = 100 - realPercent;
@@ -445,13 +445,13 @@ export default function VideoUpload() {
   // Function to render video preview with metadata
   const renderVideoPreview = () => {
     if (!preview) return null;
-    
+
     return (
       <div className="video-preview-wrapper">
-        <video 
+        <video
           ref={videoRef}
-          src={preview} 
-          controls 
+          src={preview}
+          controls
           className="video-preview"
           onLoadedMetadata={handleVideoLoaded}
           onPlay={handleVideoPlay}
@@ -1105,14 +1105,97 @@ export default function VideoUpload() {
         }
 
         .security-badge {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.8rem;
-          margin-top: 2rem;
-          color: rgba(255, 255, 255, 0.5);
-          font-size: 0.9rem;
-        }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  margin-top: 2rem;
+  padding: 1rem 1.5rem;
+  background: rgba(0, 245, 160, 0.03);
+  border-radius: 16px;
+  border: 1px solid rgba(0, 245, 160, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.security-badge::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(0, 245, 160, 0.3) 50%, 
+    transparent 100%);
+}
+
+.security-badge-content {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.9rem;
+  font-weight: 500;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 12px;
+  width: 100%;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.security-badge-content svg {
+  color: #00F5A0;
+  filter: drop-shadow(0 0 8px rgba(0, 245, 160, 0.3));
+  flex-shrink: 0;
+}
+
+.security-badge-beta {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.85rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 119, 198, 0.05) 0%, 
+    rgba(120, 119, 198, 0.05) 100%);
+  border-radius: 12px;
+  width: 100%;
+  justify-content: center;
+  border: 1px solid rgba(255, 119, 198, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.security-badge-beta::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent 0%, 
+    rgba(255, 119, 198, 0.3) 50%, 
+    transparent 100%);
+}
+
+.beta-tag {
+  background: linear-gradient(135deg, #FF77C6, #7877C6);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(255, 119, 198, 0.3);
+  animation: pulse 2s infinite;
+}
+
 
         .file-info {
           margin-top: 1rem;
@@ -1261,6 +1344,44 @@ export default function VideoUpload() {
             padding: 0.75rem 1.5rem;
             font-size: 0.9rem;
           }
+
+          @media (max-width: 768px) {
+  .security-badge {
+    padding: 0.75rem 1rem;
+    gap: 0.5rem;
+  }
+  
+  .security-badge-content,
+  .security-badge-beta {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+  }
+  
+  .security-badge-content span,
+  .security-badge-beta span:last-child {
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+}
+
+@media (max-width: 480px) {
+  .security-badge {
+    margin-top: 1.5rem;
+    padding: 0.5rem;
+  }
+  
+  .security-badge-content,
+  .security-badge-beta {
+    padding: 0.5rem;
+  }
+  
+  .beta-tag {
+    font-size: 0.65rem;
+    padding: 0.2rem 0.6rem;
+  }
+}
         }
       `}</style>
 
@@ -1429,12 +1550,17 @@ export default function VideoUpload() {
 
           {!preview && !result && (
             <div className="security-badge">
-              <Shield size={16} />
-              <span>Videos are processed securely and are not stored after analysis</span>
-              <span>Video model (Beta) – currently in testing phase. Available Soon</span>
+              <div className="security-badge-content">
+                <Shield size={16} />
+                <span>Videos are processed securely and are not stored after analysis</span>
+              </div>
+              <div className="security-badge-beta">
+                <span className="beta-tag">BETA</span>
+                <span>Video model currently in testing – Available Soon</span>
+              </div>
             </div>
           )}
-          
+
           <p className="confidence-note" style={{ marginTop: "1rem" }}>
             The confidence score reflects the model's estimation and does not guarantee correctness.
           </p>
