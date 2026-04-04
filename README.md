@@ -41,10 +41,10 @@ Thuliyam AI helps identify **AI‑generated and manipulated contents** using adv
 | Metric            | Value            |
 | ----------------- | -----------------|
 | Accuracy Rate     | **93.7%**        |
-| Images Analyzed   | **19K+**         |
+| Tested with Images| **19K+**         |
 | Avg Response Time | **< 3 seconds**  |
-| Uptime            | **99.9%**        |
-| API Calls         | **23K+**         |
+| Uptime            | **94.78%**        |
+| Tested API Calls  | **23K+**         |
 
 > ⚠️ Results may occasionally be incorrect. Always verify using additional evidence.
 
