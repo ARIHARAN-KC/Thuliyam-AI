@@ -551,7 +551,7 @@ export default function AboutPage() {
               </p>
               <div className="stat-badge">
                 <span className="stat-value">19K+</span>
-                <span className="stat-label">Images Analyzed</span>
+                <span className="stat-label">Tested Images</span>
               </div>
             </div>
           </div>

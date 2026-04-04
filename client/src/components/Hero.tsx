@@ -460,7 +460,7 @@ export default function Hero() {
             </div>
             <div className="stat-item">
               <div className="stat-value">19K+</div>
-              <div className="stat-label">Images Analyzed</div>
+              <div className="stat-label">Test Images</div>
             </div>
             <div className="stat-item">
               <div className="stat-value">24/7</div>

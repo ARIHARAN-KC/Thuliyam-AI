@@ -407,7 +407,7 @@ export default function Features() {
               </div>
               <div className="stat">
                 <div className="stat-value">19K+</div>
-                <div className="stat-label">Images</div>
+                <div className="stat-label">Tested Images</div>
               </div>
             </div>
           </div>
@@ -476,7 +476,7 @@ export default function Features() {
               </div>
               <div className="stat">
                 <div className="stat-value">23K+</div>
-                <div className="stat-label">API Calls</div>
+                <div className="stat-label">Tested API Calls</div>
               </div>
             </div>
           </div>
